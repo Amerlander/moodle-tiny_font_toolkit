@@ -16,11 +16,6 @@
 /**
  * tiny_font_toolkit for Moodle.
  *
- * Registration boilerplate only. The plugin registers no commands of its own:
- * everything it offers is a native TinyMCE control switched back on in
- * configuration.js. The PluginManager.add() call is still required because
- * Moodle passes this module's name into TinyMCE's `plugins` list.
- *
  * @module      tiny_font_toolkit/plugin
  * @copyright   2026 Calliope gGmbH
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -29,19 +24,27 @@
 import {getTinyMCE} from 'editor_tiny/loader';
 import {getPluginMetadata} from 'editor_tiny/utils';
 
+import {getSetup as getCommandSetup} from './commands';
 import {component, pluginName} from './common';
 import * as Configuration from './configuration';
+import * as Options from './options';
 
 // eslint-disable-next-line no-async-promise-executor
 export default new Promise(async(resolve) => {
     // PluginManager.add does not support asynchronous configuration, so
     // anything awaited must be awaited before it is called.
-    const [tinyMCE, pluginMetadata] = await Promise.all([
+    const [tinyMCE, pluginMetadata, setupCommands] = await Promise.all([
         getTinyMCE(),
         getPluginMetadata(component, pluginName),
+        getCommandSetup(),
     ]);
 
-    tinyMCE.PluginManager.add(pluginName, () => pluginMetadata);
+    tinyMCE.PluginManager.add(pluginName, (editor) => {
+        Options.register(editor);
+        setupCommands(editor);
+
+        return pluginMetadata;
+    });
 
     resolve([pluginName, Configuration]);
 });

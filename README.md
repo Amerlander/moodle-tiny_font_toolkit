@@ -46,14 +46,24 @@ Notifications to finish the install.
 
 ## Controls
 
-| Control | TinyMCE item |
+| Control | Backed by |
 | --- | --- |
-| Font size dropdown | `fontsize`, via `font_size_formats` |
-| Named sizes in the styles dropdown | `styles`, via `style_formats` |
+| Size picker with named entries | The `FontSize` editor command |
+| Exact size dropdown, off by default | `fontsize`, via `font_size_formats` |
 | Font family dropdown | `fontfamily`, via `font_family_formats` |
-| Text and background colour | `forecolor` and `backcolor`, via `color_map` |
+| Text colour | `forecolor`, via `color_map_foreground` |
+| Background colour | `backcolor`, via `color_map_background` |
+| Clear formatting | `removeformat` |
 
-Both colour pickers share one list of colours, shown as a swatch grid.
+The size picker is the one control the plugin registers itself, because the
+native ones cannot be labelled: TinyMCE's `styles` dropdown is fixed to
+"Formats", and its `fontsize` dropdown carries values without labels and falls
+back to the browser's computed size, so unstyled text reads as `16px`. Applying a
+size still goes through the editor's own formatter via the built-in `FontSize`
+command.
+
+The two colour pickers take separate palettes, so the background list can hold
+the pale tints that highlighting needs without those appearing as text colours.
 
 ## Settings
 
@@ -61,24 +71,21 @@ Site administration » Plugins » Text editors » TinyMCE editor » Font toolkit
 
 | Setting | Value |
 | --- | --- |
-| Font sizes | One size per line, each with a CSS unit |
-| Named sizes | `Label\|value` per line, for example `Large\|1.25rem` |
+| Sizes | `Label\|value` per line, for example `Large\|1.25rem` |
+| Exact sizes | One CSS size per line; ships empty |
 | Font families | `Label\|font stack` per line; the stack cannot contain `;` |
-| Colours | `Label\|#rrggbb` per line |
-| Allow free colour choice | Adds the full colour picker beside the palette |
+| Text colours | `Label\|#rrggbb` per line |
+| Background colours | `Label\|#rrggbb` per line; ships with pale tints only |
+| Allow free colour choice | Adds the full colour picker to both swatches; on by default |
+| Clear formatting button | Adds `removeformat` to the toolbar; on by default |
 
-Clearing a setting removes its control. An empty colour list means no colour
-buttons rather than two empty pickers.
+Clearing a list setting removes its control. An empty background colour list
+means no highlight button rather than an empty picker.
 
 The shipped sizes are in `rem`, which scales with the reader's browser font size
-and does not compound when applied inside text that already carries a size.
-Two constraints are worth knowing before changing them:
-
-- `font_size_formats` carries values only, so the size dropdown shows the raw
-  value such as `1.25rem`. The named sizes setting exists for readable labels.
-- `font_size_input_default_unit` accepts `pt`, `px`, `em`, `cm` and `mm`, so
-  `rem` is unavailable there. The plugin offers the `fontsize` select and not
-  the `fontsizeinput` field.
+and does not compound when applied inside text that already carries a size. Do
+not switch them to `em`, which is relative to the parent and multiplies when
+nested.
 
 Colour labels are read out by screen readers, so name the colour rather than its
 purpose.

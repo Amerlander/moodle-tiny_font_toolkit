@@ -32,21 +32,21 @@ use editor_tiny\plugin_with_configuration;
 /**
  * Plugininfo class.
  *
- * Note this deliberately implements `plugin_with_configuration` only, and NOT
+ * Note this implements `plugin_with_configuration` only, and not
  * `plugin_with_buttons` / `plugin_with_menuitems`. Those interfaces exist so
- * Moodle learns about buttons a plugin *provides*; every item we switch back
- * on (`fontsize`, `styles`, `fontfamily`, `forecolor`, `backcolor`) is already
- * in core's own list — see `get_tinymce_buttons()` in editor_tiny\manager.
- * Declaring them again would register them twice.
+ * Moodle learns about buttons a plugin *provides*; the items switched back on
+ * here (`fontsize`, `fontfamily`, `forecolor`, `backcolor`, `removeformat`) are
+ * already in core's own list — see `get_tinymce_buttons()` in
+ * editor_tiny\manager. Declaring them again would register them twice.
  */
 class plugininfo extends plugin implements plugin_with_configuration {
     /**
-     * Read a setting, falling back to its shipped default.
+     * Read a setting that ships with a default.
      *
      * A plugin's setting defaults are only written to config once the site has
      * gone through an upgrade, so `get_config()` can legitimately return false
-     * on a freshly built image. Falling back here keeps the pickers populated
-     * on first boot instead of silently rendering them empty.
+     * on a freshly built image. Falling back to the shipped default keeps the
+     * pickers populated on first boot instead of silently rendering them empty.
      *
      * @param string $name
      * @return string
@@ -57,6 +57,28 @@ class plugininfo extends plugin implements plugin_with_configuration {
             return (string) get_string('default_' . $name, 'tiny_font_toolkit');
         }
         return (string) $value;
+    }
+
+    /**
+     * Read a setting that ships empty, meaning its control is off by default.
+     *
+     * @param string $name
+     * @return string
+     */
+    private static function optional(string $name): string {
+        $value = get_config('tiny_font_toolkit', $name);
+        return $value === false ? '' : (string) $value;
+    }
+
+    /**
+     * Read a checkbox setting that defaults to on.
+     *
+     * @param string $name
+     * @return bool
+     */
+    private static function enabled(string $name): bool {
+        $value = get_config('tiny_font_toolkit', $name);
+        return $value === false ? true : (bool) $value;
     }
 
     /**
@@ -114,11 +136,13 @@ class plugininfo extends plugin implements plugin_with_configuration {
         ?editor $editor = null
     ): array {
         return [
-            'fontsizes' => self::lines(self::setting('fontsizes')),
             'namedsizes' => self::pairs(self::setting('namedsizes')),
+            'fontsizes' => self::lines(self::optional('fontsizes')),
             'fontfamilies' => self::pairs(self::setting('fontfamilies')),
-            'colors' => self::pairs(self::setting('colors')),
-            'customcolors' => (bool) get_config('tiny_font_toolkit', 'customcolors'),
+            'textcolors' => self::pairs(self::setting('textcolors')),
+            'backgroundcolors' => self::pairs(self::setting('backgroundcolors')),
+            'customcolors' => self::enabled('customcolors'),
+            'removeformat' => self::enabled('removeformat'),
         ];
     }
 }

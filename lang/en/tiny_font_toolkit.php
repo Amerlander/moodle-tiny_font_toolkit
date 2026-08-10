@@ -28,14 +28,32 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['colors'] = 'Colours';
-$string['colors_desc'] = 'Entries for the text and background colour pickers, one per line as '
-    . '<code>Label|#rrggbb</code>. Labels are read out by screen readers, so name the colour rather '
-    . 'than its purpose. Keep the list short and contrast-checked. Leave empty to hide both pickers.';
+$string['backgroundcolors'] = 'Background colours';
+$string['backgroundcolors_desc'] = 'Entries for the background colour picker, one per line as '
+    . '<code>Label|#rrggbb</code>. Text stays readable on pale tints, so the shipped list holds '
+    . 'only those. Leave empty to hide the picker.';
 $string['customcolors'] = 'Allow free colour choice';
-$string['customcolors_desc'] = 'Adds a full colour picker next to the palette above. Off keeps '
-    . 'everyone on the curated, contrast-checked list.';
-$string['default_colors'] = 'Black|#000000
+$string['customcolors_desc'] = 'Adds a full colour picker to both colour swatches. Turn off to keep '
+    . 'everyone on the lists above.';
+$string['default_backgroundcolors'] = 'Yellow|#fff3b0
+Orange|#ffe0c2
+Red|#fbd5d5
+Pink|#fbdde8
+Purple|#e9ddf7
+Blue|#d8e8fc
+Teal|#d2eded
+Green|#d9f0d9
+Grey|#eaeaea
+White|#ffffff';
+$string['default_fontfamilies'] = 'Theme default|inherit
+Serif|Georgia, \'Times New Roman\', serif
+Sans serif|system-ui, -apple-system, \'Segoe UI\', Roboto, sans-serif
+Monospace|ui-monospace, \'Cascadia Code\', \'Courier New\', monospace';
+$string['default_namedsizes'] = 'Small|0.875rem
+Normal|1rem
+Large|1.25rem
+Extra large|1.5rem';
+$string['default_textcolors'] = 'Black|#000000
 Dark grey|#5a5a5a
 Red|#b3261e
 Orange|#a15c00
@@ -45,34 +63,28 @@ Teal|#00696e
 Blue|#1155cc
 Purple|#6b21a8
 White|#ffffff';
-$string['default_fontfamilies'] = 'Theme default|inherit
-Serif|Georgia, \'Times New Roman\', serif
-Sans serif|system-ui, -apple-system, \'Segoe UI\', Roboto, sans-serif
-Monospace|ui-monospace, \'Cascadia Code\', \'Courier New\', monospace';
-$string['default_fontsizes'] = '0.875rem
-1rem
-1.125rem
-1.25rem
-1.5rem
-2rem';
-$string['default_namedsizes'] = 'Small|0.875rem
-Normal|1rem
-Large|1.25rem
-Extra large|1.5rem';
 $string['fontfamilies'] = 'Font families';
 $string['fontfamilies_desc'] = 'Entries for the font family dropdown, one per line as '
     . '<code>Label|font stack</code>. The stack must not contain a semicolon. <code>inherit</code> '
     . 'resets to the theme font. Leave empty to hide the dropdown.';
-$string['fontsizes'] = 'Font sizes';
-$string['fontsizes_desc'] = 'Sizes offered in the font size dropdown, one per line, each with a CSS '
-    . 'unit. Use <code>rem</code>: it scales with the reader\'s browser font size and, unlike '
-    . '<code>em</code>, does not multiply when applied inside already-sized text. This control '
-    . 'cannot show custom labels, so the raw value is what editors see; use "Named sizes" below '
-    . 'for friendly names. Leave empty to hide the dropdown.';
-$string['namedsizes'] = 'Named sizes';
-$string['namedsizes_desc'] = 'Entries for the styles dropdown, one per line as '
-    . '<code>Label|value</code> - for example <code>Large|1.25rem</code>. These are the same font '
-    . 'sizes, but with readable names. Leave empty to hide the styles dropdown.';
+$string['fontsizes'] = 'Exact sizes';
+$string['fontsizes_desc'] = 'Adds a second dropdown listing exact CSS sizes, one per line with a '
+    . 'unit. It carries values rather than labels, and shows the browser\'s computed size such as '
+    . '<code>16px</code> for text that has none set. Ships empty; the named sizes above are the '
+    . 'usual choice.';
+$string['namedsizes'] = 'Sizes';
+$string['namedsizes_desc'] = 'Entries for the size picker, one per line as <code>Label|value</code>, '
+    . 'for example <code>Large|1.25rem</code>. Use <code>rem</code>: it scales with the reader\'s '
+    . 'browser font size and, unlike <code>em</code>, does not multiply when applied inside '
+    . 'already-sized text. Leave empty to hide the picker.';
 $string['pluginname'] = 'Font toolkit';
-$string['privacy:metadata'] = 'The Font toolkit plugin only re-enables built-in TinyMCE controls '
-    . 'from site settings. It stores no personal data.';
+$string['privacy:metadata'] = 'The Font toolkit plugin only adds editor controls configured at site '
+    . 'level. It stores no personal data.';
+$string['removeformat'] = 'Clear formatting button';
+$string['removeformat_desc'] = 'Adds TinyMCE\'s clear formatting button to the toolbar. It is always '
+    . 'available in the Format menu regardless of this setting.';
+$string['sizebutton'] = 'Size';
+$string['textcolors'] = 'Text colours';
+$string['textcolors_desc'] = 'Entries for the text colour picker, one per line as '
+    . '<code>Label|#rrggbb</code>. Labels are read out by screen readers, so name the colour rather '
+    . 'than its purpose. Leave empty to hide the picker.';

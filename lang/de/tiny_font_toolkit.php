@@ -28,15 +28,32 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['colors'] = 'Farben';
-$string['colors_desc'] = 'Einträge für Text- und Hintergrundfarbe, eine pro Zeile als '
-    . '<code>Bezeichnung|#rrggbb</code>. Die Bezeichnungen werden von Screenreadern vorgelesen, '
-    . 'also die Farbe benennen, nicht ihren Zweck. Liste kurz und kontrastgeprüft halten. '
-    . 'Leer lassen blendet beide Farbwähler aus.';
+$string['backgroundcolors'] = 'Hintergrundfarben';
+$string['backgroundcolors_desc'] = 'Einträge für den Hintergrundfarb-Wähler, eine pro Zeile als '
+    . '<code>Bezeichnung|#rrggbb</code>. Auf hellen Tönen bleibt Text lesbar, deshalb enthält die '
+    . 'mitgelieferte Liste nur solche. Leer lassen blendet den Wähler aus.';
 $string['customcolors'] = 'Freie Farbwahl erlauben';
-$string['customcolors_desc'] = 'Ergänzt neben der Palette oben einen vollständigen Farbwähler. '
-    . 'Aus bedeutet: alle bleiben auf der geprüften Liste.';
-$string['default_colors'] = 'Schwarz|#000000
+$string['customcolors_desc'] = 'Ergänzt beide Farbwähler um einen vollständigen Farbwähler. '
+    . 'Ausschalten hält alle auf den Listen oben.';
+$string['default_backgroundcolors'] = 'Gelb|#fff3b0
+Orange|#ffe0c2
+Rot|#fbd5d5
+Rosa|#fbdde8
+Violett|#e9ddf7
+Blau|#d8e8fc
+Petrol|#d2eded
+Grün|#d9f0d9
+Grau|#eaeaea
+Weiß|#ffffff';
+$string['default_fontfamilies'] = 'Theme-Standard|inherit
+Serif|Georgia, \'Times New Roman\', serif
+Sans Serif|system-ui, -apple-system, \'Segoe UI\', Roboto, sans-serif
+Monospace|ui-monospace, \'Cascadia Code\', \'Courier New\', monospace';
+$string['default_namedsizes'] = 'Klein|0.875rem
+Normal|1rem
+Groß|1.25rem
+Sehr groß|1.5rem';
+$string['default_textcolors'] = 'Schwarz|#000000
 Dunkelgrau|#5a5a5a
 Rot|#b3261e
 Orange|#a15c00
@@ -46,36 +63,29 @@ Petrol|#00696e
 Blau|#1155cc
 Violett|#6b21a8
 Weiß|#ffffff';
-$string['default_fontfamilies'] = 'Theme-Standard|inherit
-Serif|Georgia, \'Times New Roman\', serif
-Sans Serif|system-ui, -apple-system, \'Segoe UI\', Roboto, sans-serif
-Monospace|ui-monospace, \'Cascadia Code\', \'Courier New\', monospace';
-$string['default_fontsizes'] = '0.875rem
-1rem
-1.125rem
-1.25rem
-1.5rem
-2rem';
-$string['default_namedsizes'] = 'Klein|0.875rem
-Normal|1rem
-Groß|1.25rem
-Sehr groß|1.5rem';
 $string['fontfamilies'] = 'Schriftarten';
 $string['fontfamilies_desc'] = 'Einträge für das Schriftarten-Menü, eine pro Zeile als '
     . '<code>Bezeichnung|Font-Stack</code>. Der Stack darf kein Semikolon enthalten. '
     . '<code>inherit</code> setzt auf die Theme-Schrift zurück. Leer lassen blendet das Menü aus.';
-$string['fontsizes'] = 'Schriftgrößen';
-$string['fontsizes_desc'] = 'Größen im Schriftgrößen-Menü, eine pro Zeile, jeweils mit CSS-Einheit. '
-    . '<code>rem</code> verwenden: es skaliert mit der Browser-Schriftgröße der Lesenden und '
-    . 'potenziert sich, anders als <code>em</code>, nicht innerhalb bereits vergrößerten Textes. '
-    . 'Dieses Bedienelement kann keine eigenen Bezeichnungen anzeigen, Redaktionelle sehen also den '
-    . 'rohen Wert; für sprechende Namen die "Benannten Größen" unten nutzen. Leer lassen blendet '
-    . 'das Menü aus.';
-$string['namedsizes'] = 'Benannte Größen';
-$string['namedsizes_desc'] = 'Einträge für das Formatvorlagen-Menü, eine pro Zeile als '
-    . '<code>Bezeichnung|Wert</code>, zum Beispiel <code>Groß|1.25rem</code>. Dieselben '
-    . 'Schriftgrößen, nur mit lesbaren Namen. Leer lassen blendet das Formatvorlagen-Menü aus.';
+$string['fontsizes'] = 'Exakte Größen';
+$string['fontsizes_desc'] = 'Ergänzt ein zweites Menü mit exakten CSS-Größen, eine pro Zeile mit '
+    . 'Einheit. Es trägt Werte statt Bezeichnungen und zeigt für Text ohne gesetzte Größe den vom '
+    . 'Browser berechneten Wert, etwa <code>16px</code>. Wird leer ausgeliefert; üblicherweise '
+    . 'genügen die benannten Größen oben.';
+$string['namedsizes'] = 'Größen';
+$string['namedsizes_desc'] = 'Einträge für den Größen-Wähler, eine pro Zeile als '
+    . '<code>Bezeichnung|Wert</code>, zum Beispiel <code>Groß|1.25rem</code>. <code>rem</code> '
+    . 'verwenden: es skaliert mit der Browser-Schriftgröße der Lesenden und potenziert sich, anders '
+    . 'als <code>em</code>, nicht innerhalb bereits vergrößerten Textes. Leer lassen blendet den '
+    . 'Wähler aus.';
 $string['pluginname'] = 'Schrift-Toolkit';
-$string['privacy:metadata'] = 'Das Schrift-Toolkit schaltet lediglich eingebaute '
-    . 'TinyMCE-Bedienelemente über Website-Einstellungen wieder frei. Es speichert keine '
-    . 'personenbezogenen Daten.';
+$string['privacy:metadata'] = 'Das Schrift-Toolkit ergänzt lediglich Editor-Bedienelemente, die auf '
+    . 'Website-Ebene konfiguriert werden. Es speichert keine personenbezogenen Daten.';
+$string['removeformat'] = 'Schaltfläche „Formate löschen"';
+$string['removeformat_desc'] = 'Ergänzt die Toolbar um TinyMCEs Schaltfläche zum Löschen der '
+    . 'Formatierung. Im Format-Menü ist sie unabhängig von dieser Einstellung immer verfügbar.';
+$string['sizebutton'] = 'Größe';
+$string['textcolors'] = 'Textfarben';
+$string['textcolors_desc'] = 'Einträge für den Textfarb-Wähler, eine pro Zeile als '
+    . '<code>Bezeichnung|#rrggbb</code>. Die Bezeichnungen werden von Screenreadern vorgelesen, '
+    . 'also die Farbe benennen, nicht ihren Zweck. Leer lassen blendet den Wähler aus.';

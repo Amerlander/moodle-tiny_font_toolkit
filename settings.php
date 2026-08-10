@@ -17,10 +17,10 @@
 /**
  * Admin settings for tiny_font_toolkit.
  *
- * Site administration » Plugins » Text editors » TinyMCE editor » Editor toolkit
+ * Site administration » Plugins » Text editors » TinyMCE editor » Font toolkit
  *
- * Emptying a setting switches its control off entirely — the plugin only adds
- * a toolbar item when it has something to put in it.
+ * Emptying a list setting switches its control off — the plugin only adds a
+ * control when it has something to put in it.
  *
  * @package     tiny_font_toolkit
  * @copyright   2026 Calliope gGmbH
@@ -33,20 +33,20 @@ $settings = new admin_settingpage('tiny_font_toolkit_settings', new lang_string(
 
 if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configtextarea(
-        'tiny_font_toolkit/fontsizes',
-        new lang_string('fontsizes', 'tiny_font_toolkit'),
-        new lang_string('fontsizes_desc', 'tiny_font_toolkit'),
-        get_string('default_fontsizes', 'tiny_font_toolkit'),
+        'tiny_font_toolkit/namedsizes',
+        new lang_string('namedsizes', 'tiny_font_toolkit'),
+        new lang_string('namedsizes_desc', 'tiny_font_toolkit'),
+        get_string('default_namedsizes', 'tiny_font_toolkit'),
         PARAM_TEXT,
         60,
         8
     ));
 
     $settings->add(new admin_setting_configtextarea(
-        'tiny_font_toolkit/namedsizes',
-        new lang_string('namedsizes', 'tiny_font_toolkit'),
-        new lang_string('namedsizes_desc', 'tiny_font_toolkit'),
-        get_string('default_namedsizes', 'tiny_font_toolkit'),
+        'tiny_font_toolkit/fontsizes',
+        new lang_string('fontsizes', 'tiny_font_toolkit'),
+        new lang_string('fontsizes_desc', 'tiny_font_toolkit'),
+        '',
         PARAM_TEXT,
         60,
         8
@@ -63,19 +63,36 @@ if ($ADMIN->fulltree) {
     ));
 
     $settings->add(new admin_setting_configtextarea(
-        'tiny_font_toolkit/colors',
-        new lang_string('colors', 'tiny_font_toolkit'),
-        new lang_string('colors_desc', 'tiny_font_toolkit'),
-        get_string('default_colors', 'tiny_font_toolkit'),
+        'tiny_font_toolkit/textcolors',
+        new lang_string('textcolors', 'tiny_font_toolkit'),
+        new lang_string('textcolors_desc', 'tiny_font_toolkit'),
+        get_string('default_textcolors', 'tiny_font_toolkit'),
         PARAM_TEXT,
         60,
-        10
+        11
+    ));
+
+    $settings->add(new admin_setting_configtextarea(
+        'tiny_font_toolkit/backgroundcolors',
+        new lang_string('backgroundcolors', 'tiny_font_toolkit'),
+        new lang_string('backgroundcolors_desc', 'tiny_font_toolkit'),
+        get_string('default_backgroundcolors', 'tiny_font_toolkit'),
+        PARAM_TEXT,
+        60,
+        11
     ));
 
     $settings->add(new admin_setting_configcheckbox(
         'tiny_font_toolkit/customcolors',
         new lang_string('customcolors', 'tiny_font_toolkit'),
         new lang_string('customcolors_desc', 'tiny_font_toolkit'),
-        0
+        1
+    ));
+
+    $settings->add(new admin_setting_configcheckbox(
+        'tiny_font_toolkit/removeformat',
+        new lang_string('removeformat', 'tiny_font_toolkit'),
+        new lang_string('removeformat_desc', 'tiny_font_toolkit'),
+        1
     ));
 }
