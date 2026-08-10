@@ -18,6 +18,20 @@ normal formatter.
 
 Moodle 4.1 (2022112800) or later. No other dependencies.
 
+## Versioning
+
+`main` carries development. Each release gets a tag such as `v1.0.0`, and the
+`v1` branch points at the newest 1.x release. Pin the branch to follow 1.x, or a
+tag for an exact version:
+
+```
+git clone --branch v1     https://github.com/Amerlander/moodle-tiny_font_toolkit.git
+git clone --branch v1.0.0 https://github.com/Amerlander/moodle-tiny_font_toolkit.git
+```
+
+A new major version lands on `main` and gets its own branch, so a `v1` pin never
+picks it up.
+
 ## Installation
 
 Copy or clone this repository into your Moodle installation at:
