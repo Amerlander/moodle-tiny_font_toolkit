@@ -1,0 +1,17 @@
+# One workflow per Moodle version so each gets its own status badge.
+# All the steps live in ci-core.yml.
+name: Moodle 5.0
+
+on:
+  push:
+  pull_request:
+  # A commit made by the rebuild workflow uses GITHUB_TOKEN, which deliberately
+  # does not trigger further runs — dispatch this manually after one of those.
+  workflow_dispatch:
+
+jobs:
+  test:
+    uses: ./.github/workflows/ci-core.yml
+    with:
+      php: '8.3'
+      moodle-branch: MOODLE_500_STABLE

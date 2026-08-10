@@ -1,0 +1,124 @@
+# Rebuilds amd/build from amd/src using Moodle's own Grunt pipeline, and commits
+# the result. Run this manually after editing anything in amd/src.
+#
+# Why Moodle's Grunt and not a local `npm run build`: Moodle's AMD output is
+# Rollup + Babel with three plugins, one of which is Moodle's own
+# .grunt/babel-plugin-add-module-to-define.js. It does two things a stock Babel
+# AMD transform does not — it names the define() after the component, and it
+# makes an `export default` the module's *return value*.
+#
+# The second one is load-critical. Moodle compiles the dynamic import() in
+# editor_tiny/editor.js to a bare `require([path], resolve, reject)` with no
+# ES-module interop, then checks the result with Array.isArray(). Without the
+# return, RequireJS hands back the exports object instead of the exported
+# Promise, the plugin is filtered out of the list, configure() is never called,
+# and the editor loads with no controls and no error. Reproducing that outside
+# Moodle means vendoring Moodle's build plugin; running Moodle's own build does
+# not.
+#
+# This job deliberately uses neither moodle-plugin-ci nor a database. Grunt needs
+# only a Moodle checkout and its npm dependencies, so dropping PHP, Composer and
+# the Postgres service container makes the job faster and removes the Docker Hub
+# outage as a way for it to fail. ci.yml's Grunt step is what gates staleness.
+
+name: Rebuild AMD bundles
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  MOODLE_BRANCH: MOODLE_501_STABLE
+  COMPONENT_PATH: public/lib/editor/tiny/plugins/font_toolkit
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+        with:
+          path: plugin
+          ref: ${{ github.ref_name }}
+
+      - name: Check out Moodle
+        run: git clone --depth 1 --branch "${MOODLE_BRANCH}" https://github.com/moodle/moodle.git moodle
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: moodle/.nvmrc
+          cache: npm
+          # Moodle ships no package-lock.json, so package.json is the only file
+          # available to key the cache on — and `npm ci`, which requires a
+          # lockfile, is not an option either.
+          cache-dependency-path: moodle/package.json
+
+      - name: Install Moodle's npm dependencies
+        working-directory: moodle
+        run: npm install --no-audit --no-fund
+
+      - name: Place the plugin in the Moodle tree
+        run: |
+          set -eux
+          # Grunt walks up from the component directory to find the Moodle root,
+          # so the plugin has to sit inside the tree at its real path.
+          mkdir -p "moodle/${COMPONENT_PATH}"
+          cp -a plugin/. "moodle/${COMPONENT_PATH}/"
+          rm -rf "moodle/${COMPONENT_PATH}/.git"
+
+      - name: Run Moodle's Grunt
+        working-directory: moodle/${{ env.COMPONENT_PATH }}
+        run: |
+          set -eux
+          # Run from inside the component directory: that is how Moodle's
+          # Gruntfile is meant to be driven. It sets grunt.moodleEnv.inComponent
+          # from the cwd, which is what scopes amdSrc to this plugin. Passing
+          # --root from the Moodle root instead leaves rollup with an empty file
+          # list — the chain prints "Done." and builds nothing.
+          pwd
+          "${GITHUB_WORKSPACE}/moodle/node_modules/.bin/grunt" amd
+
+      - name: Collect and verify the generated bundles
+        run: |
+          set -eux
+          ls -l "moodle/${COMPONENT_PATH}/amd/build/"
+          cp -a "moodle/${COMPONENT_PATH}/amd/build/." plugin/amd/build/
+          ls -l plugin/amd/build/
+
+          # Assert the properties that decide whether Moodle can load these
+          # files, not merely that files exist. Checking existence and mtimes is
+          # what let an earlier version of this job report success while Grunt
+          # had silently built nothing: the checkout itself is minutes old, so
+          # every file looks freshly written.
+          #
+          # 1. The hand-authored placeholders these replaced carried a marker
+          #    comment. If it survives, Grunt did not run.
+          # 2. Each module must name itself, or RequireJS cannot resolve it.
+          # 3. plugin.js uses `export default`, and Moodle's build turns that
+          #    into the AMD module's return value — see the note at the top of
+          #    this file for what breaks without it, and how quietly.
+          for module in common configuration plugin; do
+            file="plugin/amd/build/${module}.min.js"
+            test -s "${file}"
+            ! grep -q 'Hand-authored' "${file}"
+            grep -q "define(\"tiny_font_toolkit/${module}\"" "${file}"
+          done
+          grep -q 'return _exports\.default' plugin/amd/build/plugin.min.js
+
+      - name: Commit the rebuilt bundles
+        working-directory: plugin
+        run: |
+          set -eux
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add amd/build
+          if git diff --cached --quiet; then
+            echo 'amd/build is already up to date with amd/src.'
+          else
+            git commit -m "Rebuild amd/build with Moodle's Grunt pipeline"
+            git push
+          fi

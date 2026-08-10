@@ -1,0 +1,3 @@
+# Moodle expects LF line endings in source files. Pin them here so a checkout
+# on Windows (where core.autocrlf is often on) can't commit CRLF back.
+* text=auto eol=lf
