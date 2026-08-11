@@ -1,30 +1,22 @@
-# Rebuilds amd/build from amd/src using Moodle's own Grunt pipeline, commits the
-# result, and kicks off the per-version CI workflows against it.
+# Rebuilds amd/build from amd/src, commits the result, and kicks off the
+# per-version CI workflows against it.
 #
 # It runs by itself whenever amd/src changes on main, so a source change settles
 # on its own. Expect the CI run that starts alongside the push to report the
 # build as stale, since at that moment it is; the run this job triggers afterwards
 # is the one that counts. Dispatch manually to rebuild without a source change.
 #
-# Why Moodle's Grunt and not a local `npm run build`: Moodle's AMD output is
-# Rollup + Babel with three plugins, one of which is Moodle's own
-# .grunt/babel-plugin-add-module-to-define.js. It does two things a stock Babel
-# AMD transform does not — it names the define() after the component, and it
-# makes an `export default` the module's *return value*.
+# The build goes through `moodle-plugin-ci grunt`, the same command ci-core.yml
+# uses to check the result. That matters more than it looks. Moodle ships no
+# package-lock.json, so `npm install` resolves Babel and terser afresh every time,
+# and two differently provisioned Moodle checkouts produce different bytes for the
+# same source. An earlier version of this job cloned Moodle itself and ran grunt
+# directly, which left every version reporting configuration.min.js as stale
+# against a build that Moodle 5.1's own grunt had just produced.
 #
-# The second one is load-critical. Moodle compiles the dynamic import() in
-# editor_tiny/editor.js to a bare `require([path], resolve, reject)` with no
-# ES-module interop, then checks the result with Array.isArray(). Without the
-# return, RequireJS hands back the exports object instead of the exported
-# Promise, the plugin is filtered out of the list, configure() is never called,
-# and the editor loads with no controls and no error. Reproducing that outside
-# Moodle means vendoring Moodle's build plugin; running Moodle's own build does
-# not.
-#
-# This job deliberately uses neither moodle-plugin-ci nor a database. Grunt needs
-# only a Moodle checkout and its npm dependencies, so dropping PHP, Composer and
-# the Postgres service container makes the job faster and removes the Docker Hub
-# outage as a way for it to fail. ci.yml's Grunt step is what gates staleness.
+# `moodle-plugin-ci grunt` backs the plugin's JS up, runs grunt over the plugin
+# directory, then compares by sha1 and exits 1 on any difference. The output it
+# leaves behind is what gets committed here; the non-zero exit is expected.
 
 name: Rebuild AMD bundles
 
@@ -41,13 +33,21 @@ permissions:
   # To dispatch the CI workflows once the rebuilt bundles are committed.
   actions: write
 
-env:
-  MOODLE_BRANCH: MOODLE_501_STABLE
-  COMPONENT_PATH: public/lib/editor/tiny/plugins/font_toolkit
-
 jobs:
   build:
     runs-on: ubuntu-22.04
+
+    services:
+      postgres:
+        image: postgres:14
+        env:
+          POSTGRES_USER: 'postgres'
+          POSTGRES_HOST_AUTH_METHOD: 'trust'
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready --health-interval 10s
+          --health-timeout 5s --health-retries 3
 
     steps:
       - name: Check out repository code
@@ -56,69 +56,51 @@ jobs:
           path: plugin
           ref: ${{ github.ref_name }}
 
-      - name: Check out Moodle
-        run: git clone --depth 1 --branch "${MOODLE_BRANCH}" https://github.com/moodle/moodle.git moodle
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      # Everything from here to the grunt step mirrors ci-core.yml. Keep them in
+      # step: the point is that the builder and the checker share a toolchain.
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
         with:
-          node-version-file: moodle/.nvmrc
-          cache: npm
-          # Moodle ships no package-lock.json, so package.json is the only file
-          # available to key the cache on — and `npm ci`, which requires a
-          # lockfile, is not an option either.
-          cache-dependency-path: moodle/package.json
+          php-version: '8.3'
+          ini-values: max_input_vars=5000
+          coverage: none
 
-      - name: Install Moodle's npm dependencies
-        working-directory: moodle
-        run: npm install --no-audit --no-fund
-
-      - name: Place the plugin in the Moodle tree
+      - name: Initialise moodle-plugin-ci
         run: |
-          set -eux
-          # Grunt walks up from the component directory to find the Moodle root,
-          # so the plugin has to sit inside the tree at its real path.
-          mkdir -p "moodle/${COMPONENT_PATH}"
-          cp -a plugin/. "moodle/${COMPONENT_PATH}/"
-          rm -rf "moodle/${COMPONENT_PATH}/.git"
+          composer create-project -n --no-dev --prefer-dist moodlehq/moodle-plugin-ci ci ^4
+          echo $(cd ci/bin; pwd) >> $GITHUB_PATH
+          echo $(cd ci/vendor/bin; pwd) >> $GITHUB_PATH
+          sudo locale-gen en_AU.UTF-8
+          echo "NVM_DIR=$HOME/.nvm" >> $GITHUB_ENV
 
-      - name: Run Moodle's Grunt
-        working-directory: moodle/${{ env.COMPONENT_PATH }}
-        run: |
-          set -eux
-          # Run from inside the component directory: that is how Moodle's
-          # Gruntfile is meant to be driven. It sets grunt.moodleEnv.inComponent
-          # from the cwd, which is what scopes amdSrc to this plugin. Passing
-          # --root from the Moodle root instead leaves rollup with an empty file
-          # list — the chain prints "Done." and builds nothing.
-          pwd
-          "${GITHUB_WORKSPACE}/moodle/node_modules/.bin/grunt" amd
+      - name: Install moodle-plugin-ci
+        run: moodle-plugin-ci install --plugin ./plugin --db-host=127.0.0.1
+        env:
+          DB: pgsql
+          MOODLE_BRANCH: MOODLE_501_STABLE
 
-      - name: Collect and verify the generated bundles
+      - name: Rebuild the bundles
         run: |
-          set -eux
-          ls -l "moodle/${COMPONENT_PATH}/amd/build/"
-          cp -a "moodle/${COMPONENT_PATH}/amd/build/." plugin/amd/build/
+          set -uxo pipefail
+          # Exits 1 on any difference from the committed files, which is the
+          # situation this job exists to resolve.
+          moodle-plugin-ci grunt || true
+
+          set -e
           ls -l plugin/amd/build/
 
-          # Assert the properties that decide whether Moodle can load these
-          # files, not merely that files exist. Checking existence and mtimes is
-          # what let an earlier version of this job report success while Grunt
-          # had silently built nothing: the checkout itself is minutes old, so
-          # every file looks freshly written.
-          #
-          # 1. The hand-authored placeholders these replaced carried a marker
-          #    comment. If it survives, Grunt did not run.
-          # 2. Each module must name itself, or RequireJS cannot resolve it.
-          # 3. plugin.js uses `export default`, and Moodle's build turns that
-          #    into the AMD module's return value — see the note at the top of
-          #    this file for what breaks without it, and how quietly.
-          for module in common configuration plugin; do
-            file="plugin/amd/build/${module}.min.js"
-            test -s "${file}"
-            ! grep -q 'Hand-authored' "${file}"
-            grep -q "define(\"tiny_font_toolkit/${module}\"" "${file}"
+          # Grunt aborts before rollup if eslint:amd rejects amd/src, in which
+          # case nothing is written and the commit step below would report
+          # everything up to date. Source maps only come from rollup, so they are
+          # the tell.
+          for module in commands common configuration icons options plugin; do
+            test -s "plugin/amd/build/${module}.min.js"
+            test -s "plugin/amd/build/${module}.min.js.map"
+            grep -q "define(\"tiny_font_toolkit/${module}\"" "plugin/amd/build/${module}.min.js"
           done
+
+          # An `export default` has to be the module's return value or
+          # editor_tiny drops the plugin without a word. See the README.
           grep -q 'return _exports\.default' plugin/amd/build/plugin.min.js
 
       - name: Commit the rebuilt bundles
