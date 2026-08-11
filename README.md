@@ -1,8 +1,10 @@
 # tiny_font_toolkit
 
+[![Moodle 4.1](https://github.com/Amerlander/moodle-tiny_font_toolkit/actions/workflows/moodle-4.1.yml/badge.svg)](https://github.com/Amerlander/moodle-tiny_font_toolkit/actions/workflows/moodle-4.1.yml)
 [![Moodle 4.5](https://github.com/Amerlander/moodle-tiny_font_toolkit/actions/workflows/moodle-4.5.yml/badge.svg)](https://github.com/Amerlander/moodle-tiny_font_toolkit/actions/workflows/moodle-4.5.yml)
 [![Moodle 5.0](https://github.com/Amerlander/moodle-tiny_font_toolkit/actions/workflows/moodle-5.0.yml/badge.svg)](https://github.com/Amerlander/moodle-tiny_font_toolkit/actions/workflows/moodle-5.0.yml)
 [![Moodle 5.1](https://github.com/Amerlander/moodle-tiny_font_toolkit/actions/workflows/moodle-5.1.yml/badge.svg)](https://github.com/Amerlander/moodle-tiny_font_toolkit/actions/workflows/moodle-5.1.yml)
+[![Moodle 5.2](https://github.com/Amerlander/moodle-tiny_font_toolkit/actions/workflows/moodle-5.2.yml/badge.svg)](https://github.com/Amerlander/moodle-tiny_font_toolkit/actions/workflows/moodle-5.2.yml)
 [![Licence: GPL v3](https://img.shields.io/badge/licence-GPLv3-blue.svg)](LICENSE)
 
 A Moodle TinyMCE subplugin that adds font size, font family and colour controls

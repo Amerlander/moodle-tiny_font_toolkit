@@ -1,0 +1,21 @@
+# One workflow per Moodle version so each gets its own status badge.
+# All the steps live in ci-core.yml.
+#
+# PHP 8.0 rather than the 7.4 that Moodle 4.1 also accepts: moodle-plugin-ci 4
+# needs PHP 8. The plugin itself avoids PHP 8 only functions, so 7.4 works, but
+# that rests on review rather than on this workflow.
+name: Moodle 4.1
+
+on:
+  push:
+  pull_request:
+  # A commit made by the rebuild workflow uses GITHUB_TOKEN, which deliberately
+  # does not trigger further runs — dispatch this manually after one of those.
+  workflow_dispatch:
+
+jobs:
+  test:
+    uses: ./.github/workflows/ci-core.yml
+    with:
+      php: '8.0'
+      moodle-branch: MOODLE_401_STABLE

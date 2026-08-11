@@ -147,6 +147,6 @@ jobs:
           set -eux
           # A commit made with GITHUB_TOKEN deliberately triggers no workflows, so
           # without this the badges would keep showing the pre-rebuild result.
-          for workflow in moodle-4.5.yml moodle-5.0.yml moodle-5.1.yml; do
-            gh workflow run "${workflow}" --ref "${GITHUB_REF_NAME}"
+          for workflow in .github/workflows/moodle-*.yml; do
+            gh workflow run "$(basename "${workflow}")" --ref "${GITHUB_REF_NAME}"
           done

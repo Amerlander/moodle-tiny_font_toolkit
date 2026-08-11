@@ -95,7 +95,7 @@ class plugininfo extends plugin implements plugin_with_configuration {
     private static function pairs(string $raw): array {
         $pairs = [];
         foreach (self::lines($raw) as $line) {
-            if (!str_contains($line, '|')) {
+            if (strpos($line, '|') === false) {
                 continue;
             }
             [$label, $value] = array_map('trim', explode('|', $line, 2));
@@ -124,7 +124,7 @@ class plugininfo extends plugin implements plugin_with_configuration {
         $lines = self::lines($raw);
         $isnamed = false;
         foreach ($lines as $line) {
-            if (str_contains($line, '|')) {
+            if (strpos($line, '|') !== false) {
                 $isnamed = true;
                 break;
             }
@@ -136,7 +136,7 @@ class plugininfo extends plugin implements plugin_with_configuration {
 
         $named = [];
         foreach ($lines as $line) {
-            if (str_contains($line, '|')) {
+            if (strpos($line, '|') !== false) {
                 [$label, $value] = array_map('trim', explode('|', $line, 2));
                 if ($label !== '' && $value !== '') {
                     $named[] = [$label, $value];
