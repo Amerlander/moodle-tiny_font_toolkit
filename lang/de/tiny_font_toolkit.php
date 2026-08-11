@@ -22,6 +22,7 @@
  * for the matching admin settings, so they are safe to translate and to change.
  *
  * @package     tiny_font_toolkit
+ * @author      Juri Wolf
  * @copyright   2026 Calliope gGmbH
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

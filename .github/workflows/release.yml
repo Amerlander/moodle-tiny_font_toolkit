@@ -1,0 +1,105 @@
+# Builds the installable plugin ZIP for a tag and attaches it to the GitHub
+# release, which is what the Moodle plugins directory and the Marketplace ask for.
+#
+# The archive comes from `git archive`, so it holds exactly the tracked files at
+# the tag and nothing from the working tree. .gitattributes marks the CI
+# directory export-ignore, keeping it out.
+#
+# Tag after CI is green: this runs on the tag push and does not wait for the
+# per-version workflows.
+
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing tag to build and attach the ZIP to
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Work out which tag to build
+        id: target
+        run: |
+          set -eux
+          tag="${{ inputs.tag }}"
+          if [ -z "${tag}" ]; then tag="${GITHUB_REF_NAME}"; fi
+          echo "tag=${tag}" >> "$GITHUB_OUTPUT"
+
+      - name: Check out the tag
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.target.outputs.tag }}
+
+      - name: Build the plugin ZIP
+        id: build
+        run: |
+          set -eux
+          tag='${{ steps.target.outputs.tag }}'
+          zip="tiny_font_toolkit-${tag}.zip"
+
+          # Moodle's installer takes the plugin name from the archive's single
+          # root folder, which must therefore be `font_toolkit` and not the
+          # repository name.
+          mkdir -p dist/font_toolkit
+          git archive HEAD | tar -x -C dist/font_toolkit
+          (cd dist && zip -qr "../${zip}" font_toolkit)
+
+          echo "zip=${zip}" >> "$GITHUB_OUTPUT"
+          unzip -l "${zip}"
+
+      - name: Check the archive is installable and matches the tag
+        run: |
+          set -eux
+          zip='${{ steps.build.outputs.zip }}'
+          tag='${{ steps.target.outputs.tag }}'
+
+          # Exactly one root folder, named after the plugin.
+          roots=$(unzip -Z1 "${zip}" | cut -d/ -f1 | sort -u)
+          test "${roots}" = 'font_toolkit'
+
+          # The built AMD modules have to be in there: Moodle serves those, not
+          # amd/src, so an archive without them installs a plugin that does
+          # nothing.
+          for module in commands common configuration icons options plugin; do
+            unzip -l "${zip}" | grep -q "font_toolkit/amd/build/${module}.min.js"
+          done
+          unzip -l "${zip}" | grep -q 'font_toolkit/version.php'
+          unzip -l "${zip}" | grep -q 'font_toolkit/LICENSE'
+
+          # Nothing from the CI directory.
+          if unzip -Z1 "${zip}" | grep -q '\.github'; then
+            echo 'The archive contains CI files.' >&2
+            exit 1
+          fi
+
+          # A tag whose version.php disagrees with it would ship a plugin that
+          # reports the wrong release.
+          release=$(sed -n "s/.*release *= *'\([^']*\)'.*/\1/p" dist/font_toolkit/version.php)
+          test "v${release}" = "${tag}"
+          echo "version.php reports ${release}, tag is ${tag}"
+
+      - name: Attach it to the release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -eux
+          zip='${{ steps.build.outputs.zip }}'
+          tag='${{ steps.target.outputs.tag }}'
+
+          if gh release view "${tag}" >/dev/null 2>&1; then
+            gh release upload "${tag}" "${zip}" --clobber
+          else
+            gh release create "${tag}" "${zip}" --title "${tag}" --generate-notes
+          fi

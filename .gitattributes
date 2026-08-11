@@ -1,3 +1,8 @@
 # Moodle expects LF line endings in source files. Pin them here so a checkout
 # on Windows (where core.autocrlf is often on) can't commit CRLF back.
 * text=auto eol=lf
+
+# Kept out of the release archive that .github/workflows/release.yml builds with
+# git archive: none of it belongs in an installed plugin.
+/.github        export-ignore
+/.gitattributes export-ignore

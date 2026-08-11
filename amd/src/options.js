@@ -23,6 +23,7 @@
  * editor_tiny/options, so registering the option is enough to read the value.
  *
  * @module      tiny_font_toolkit/options
+ * @author      Juri Wolf
  * @copyright   2026 Calliope gGmbH
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

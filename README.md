@@ -34,7 +34,11 @@ picks it up.
 
 ## Installation
 
-Copy or clone this repository into your Moodle installation at:
+Each release carries an installable ZIP as an asset, which Moodle's
+*Install plugins from a ZIP file* page accepts directly.
+
+To install from source instead, copy or clone this repository into your Moodle
+installation at:
 
 ```
 lib/editor/tiny/plugins/font_toolkit

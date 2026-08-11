@@ -27,6 +27,7 @@
  * the work and partial selections, nesting, undo and redo behave normally.
  *
  * @module      tiny_font_toolkit/commands
+ * @author      Juri Wolf
  * @copyright   2026 Calliope gGmbH
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

@@ -32,6 +32,7 @@
  * scales up and reads a little heavier.
  *
  * @module      tiny_font_toolkit/icons
+ * @author      Juri Wolf
  * @copyright   2026 Calliope gGmbH
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

@@ -17,6 +17,7 @@
  * tiny_font_toolkit for Moodle.
  *
  * @module      tiny_font_toolkit/plugin
+ * @author      Juri Wolf
  * @copyright   2026 Calliope gGmbH
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

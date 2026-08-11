@@ -23,6 +23,7 @@
  * plugins' configure() hooks, so they can be put back here.
  *
  * @module      tiny_font_toolkit/configuration
+ * @author      Juri Wolf
  * @copyright   2026 Calliope gGmbH
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -131,9 +132,9 @@ export const configure = (instanceConfig, options) => {
     // is toolbar only. It brings TinyMCE's increase and decrease buttons with
     // it; there are no standalone toolbar items for those.
     if (toolbarItems.length || config.fontsizeinput) {
-        // addToolbarButtons returns a copy, addToolbarSection mutates what it is
-        // given. Taking the copy first keeps Moodle's own config object out of
-        // it.
+        // Note that addToolbarButtons returns a copy while addToolbarSection
+        // mutates what it is given. Taking the copy first keeps Moodle's own
+        // config object out of it.
         let toolbar = addToolbarButtons(instanceConfig.toolbar, 'formatting', toolbarItems);
 
         if (config.fontsizeinput) {
