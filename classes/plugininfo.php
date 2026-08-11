@@ -44,17 +44,21 @@ class plugininfo extends plugin implements plugin_with_configuration {
     /**
      * Read a setting that ships with a default.
      *
-     * A plugin's setting defaults are only written to config once the site has
-     * gone through an upgrade, so `get_config()` can legitimately return false
-     * on a freshly built image. Falling back to the shipped default keeps the
-     * pickers populated on first boot instead of silently rendering them empty.
+     * The fallback covers one case only: `get_config()` returns false while a
+     * setting has never been written, which is where a freshly built image sits
+     * until upgrade.php applies the defaults. That keeps the pickers populated on
+     * first boot.
+     *
+     * An empty string is left alone. Every list setting documents that clearing
+     * it removes its control, and treating empty as unset would refill it from
+     * the default instead, so an administrator could never turn one off.
      *
      * @param string $name
      * @return string
      */
     private static function setting(string $name): string {
         $value = get_config('tiny_font_toolkit', $name);
-        if ($value === false || trim((string) $value) === '') {
+        if ($value === false) {
             return (string) get_string('default_' . $name, 'tiny_font_toolkit');
         }
         return (string) $value;

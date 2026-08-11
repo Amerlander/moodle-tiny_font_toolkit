@@ -80,12 +80,17 @@ $string['fontsizeinputunit_desc'] = 'Was eine nackte Zahl im Feld bedeutet. Tiny
     . 'einzige relative der fünf und skaliert mit der Browser-Schriftgröße der Lesenden. Zu beachten: '
     . 'es bezieht sich auf das Elternelement, eine Zahl innerhalb bereits vergrößerten Textes '
     . 'multipliziert also, statt zu ersetzen.';
+$string['groupcolors'] = 'Farben';
+$string['groupfonts'] = 'Schriftarten';
+$string['groupother'] = 'Weiteres';
+$string['groupsizes'] = 'Größen';
 $string['pluginname'] = 'Schrift-Toolkit';
 $string['privacy:metadata'] = 'Das Schrift-Toolkit ergänzt lediglich Editor-Bedienelemente, die auf '
     . 'Website-Ebene konfiguriert werden. Es speichert keine personenbezogenen Daten.';
 $string['removeformat'] = 'Schaltfläche „Formate löschen"';
 $string['removeformat_desc'] = 'Ergänzt die Toolbar um TinyMCEs Schaltfläche zum Löschen der '
     . 'Formatierung. Im Format-Menü ist sie unabhängig von dieser Einstellung immer verfügbar.';
+$string['showdefault'] = 'Mitgelieferte Vorgabe anzeigen';
 $string['sizebutton'] = 'Größe';
 $string['sizes'] = 'Größen';
 $string['sizes_desc'] = 'Eine Größe pro Zeile. Mit Bezeichnung als <code>Bezeichnung|Wert</code> '

@@ -80,12 +80,17 @@ $string['fontsizeinputunit_desc'] = 'What a bare number typed into the field mea
     . 'relative one, so it scales with the reader\'s browser font size. Note that it is relative to '
     . 'the parent, so typing a number inside text that already carries a size multiplies rather than '
     . 'replaces.';
+$string['groupcolors'] = 'Colours';
+$string['groupfonts'] = 'Fonts';
+$string['groupother'] = 'Other';
+$string['groupsizes'] = 'Sizes';
 $string['pluginname'] = 'Font toolkit';
 $string['privacy:metadata'] = 'The Font toolkit plugin only adds editor controls configured at site '
     . 'level. It stores no personal data.';
 $string['removeformat'] = 'Clear formatting button';
 $string['removeformat_desc'] = 'Adds TinyMCE\'s clear formatting button to the toolbar. It is always '
     . 'available in the Format menu regardless of this setting.';
+$string['showdefault'] = 'Show the shipped default';
 $string['sizebutton'] = 'Size';
 $string['sizes'] = 'Sizes';
 $string['sizes_desc'] = 'One size per line. Name them as <code>Label|value</code>, for example '

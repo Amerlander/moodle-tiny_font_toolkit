@@ -19,9 +19,13 @@
  *
  * Site administration » Plugins » Text editors » TinyMCE editor » Font toolkit
  *
- * Emptying a list setting switches its control off. Each control's checkbox
+ * Clearing a list setting switches its control off. Each control's checkbox
  * decides whether it also appears in the toolbar; it stays in the Format menu
  * either way.
+ *
+ * The lists use admin_setting_list rather than admin_setting_configtextarea so
+ * that their defaults sit behind a disclosure triangle instead of being printed
+ * in full under every field.
  *
  * @package     tiny_font_toolkit
  * @author      Juri Wolf
@@ -31,17 +35,25 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+use tiny_font_toolkit\admin_setting_list;
+
 $settings = new admin_settingpage('tiny_font_toolkit_settings', new lang_string('pluginname', 'tiny_font_toolkit'));
 
 if ($ADMIN->fulltree) {
-    $settings->add(new admin_setting_configtextarea(
+    $settings->add(new admin_setting_heading(
+        'tiny_font_toolkit/groupsizes',
+        get_string('groupsizes', 'tiny_font_toolkit'),
+        ''
+    ));
+
+    $settings->add(new admin_setting_list(
         'tiny_font_toolkit/sizes',
         new lang_string('sizes', 'tiny_font_toolkit'),
         new lang_string('sizes_desc', 'tiny_font_toolkit'),
         get_string('default_sizes', 'tiny_font_toolkit'),
         PARAM_TEXT,
         60,
-        8
+        6
     ));
 
     $settings->add(new admin_setting_configcheckbox(
@@ -68,14 +80,20 @@ if ($ADMIN->fulltree) {
         ['em' => 'em', 'pt' => 'pt', 'px' => 'px', 'cm' => 'cm', 'mm' => 'mm']
     ));
 
-    $settings->add(new admin_setting_configtextarea(
+    $settings->add(new admin_setting_heading(
+        'tiny_font_toolkit/groupfonts',
+        get_string('groupfonts', 'tiny_font_toolkit'),
+        ''
+    ));
+
+    $settings->add(new admin_setting_list(
         'tiny_font_toolkit/fontfamilies',
         new lang_string('fontfamilies', 'tiny_font_toolkit'),
         new lang_string('fontfamilies_desc', 'tiny_font_toolkit'),
         get_string('default_fontfamilies', 'tiny_font_toolkit'),
         PARAM_TEXT,
         60,
-        6
+        5
     ));
 
     $settings->add(new admin_setting_configcheckbox(
@@ -85,14 +103,20 @@ if ($ADMIN->fulltree) {
         1
     ));
 
-    $settings->add(new admin_setting_configtextarea(
+    $settings->add(new admin_setting_heading(
+        'tiny_font_toolkit/groupcolors',
+        get_string('groupcolors', 'tiny_font_toolkit'),
+        ''
+    ));
+
+    $settings->add(new admin_setting_list(
         'tiny_font_toolkit/textcolors',
         new lang_string('textcolors', 'tiny_font_toolkit'),
         new lang_string('textcolors_desc', 'tiny_font_toolkit'),
         get_string('default_textcolors', 'tiny_font_toolkit'),
         PARAM_TEXT,
         60,
-        11
+        6
     ));
 
     $settings->add(new admin_setting_configcheckbox(
@@ -102,14 +126,14 @@ if ($ADMIN->fulltree) {
         1
     ));
 
-    $settings->add(new admin_setting_configtextarea(
+    $settings->add(new admin_setting_list(
         'tiny_font_toolkit/backgroundcolors',
         new lang_string('backgroundcolors', 'tiny_font_toolkit'),
         new lang_string('backgroundcolors_desc', 'tiny_font_toolkit'),
         get_string('default_backgroundcolors', 'tiny_font_toolkit'),
         PARAM_TEXT,
         60,
-        11
+        6
     ));
 
     $settings->add(new admin_setting_configcheckbox(
@@ -124,6 +148,12 @@ if ($ADMIN->fulltree) {
         new lang_string('customcolors', 'tiny_font_toolkit'),
         new lang_string('customcolors_desc', 'tiny_font_toolkit'),
         1
+    ));
+
+    $settings->add(new admin_setting_heading(
+        'tiny_font_toolkit/groupother',
+        get_string('groupother', 'tiny_font_toolkit'),
+        ''
     ));
 
     $settings->add(new admin_setting_configcheckbox(
