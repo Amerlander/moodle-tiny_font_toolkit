@@ -35,8 +35,8 @@ use editor_tiny\plugin_with_configuration;
  * Note this implements `plugin_with_configuration` only, and not
  * `plugin_with_buttons` / `plugin_with_menuitems`. Those interfaces exist so
  * Moodle learns about buttons a plugin *provides*; the items switched back on
- * here (`fontsize`, `fontfamily`, `forecolor`, `backcolor`, `removeformat`) are
- * already in core's own list — see `get_tinymce_buttons()` in
+ * here (`fontsize`, `fontsizeinput`, `forecolor`, `backcolor`, `removeformat`)
+ * are already in core's own list, see `get_tinymce_buttons()` in
  * editor_tiny\manager. Declaring them again would register them twice.
  */
 class plugininfo extends plugin implements plugin_with_configuration {
@@ -60,25 +60,15 @@ class plugininfo extends plugin implements plugin_with_configuration {
     }
 
     /**
-     * Read a setting that ships empty, meaning its control is off by default.
+     * Read a checkbox setting, with the default applied when it is unset.
      *
      * @param string $name
-     * @return string
-     */
-    private static function optional(string $name): string {
-        $value = get_config('tiny_font_toolkit', $name);
-        return $value === false ? '' : (string) $value;
-    }
-
-    /**
-     * Read a checkbox setting that defaults to on.
-     *
-     * @param string $name
+     * @param bool $default
      * @return bool
      */
-    private static function enabled(string $name): bool {
+    private static function flag(string $name, bool $default): bool {
         $value = get_config('tiny_font_toolkit', $name);
-        return $value === false ? true : (bool) $value;
+        return $value === false ? $default : (bool) $value;
     }
 
     /**
@@ -116,11 +106,53 @@ class plugininfo extends plugin implements plugin_with_configuration {
     }
 
     /**
+     * Work out which size control the configured list calls for.
+     *
+     * One setting drives both. A list that names its entries gets the labelled
+     * picker this plugin registers; a list of bare values gets TinyMCE's native
+     * dropdown, which shows the values as they are. Exactly one of the two
+     * returned lists is ever populated.
+     *
+     * A bare line among named ones labels itself, so that a list can mix
+     * `Large|1.25rem` with a plain `2rem` without losing the entry.
+     *
+     * @param string $raw
+     * @return array{named: array[], values: string[]}
+     */
+    private static function sizes(string $raw): array {
+        $lines = self::lines($raw);
+        $isnamed = false;
+        foreach ($lines as $line) {
+            if (str_contains($line, '|')) {
+                $isnamed = true;
+                break;
+            }
+        }
+
+        if (!$isnamed) {
+            return ['named' => [], 'values' => $lines];
+        }
+
+        $named = [];
+        foreach ($lines as $line) {
+            if (str_contains($line, '|')) {
+                [$label, $value] = array_map('trim', explode('|', $line, 2));
+                if ($label !== '' && $value !== '') {
+                    $named[] = [$label, $value];
+                }
+            } else {
+                $named[] = [$line, $line];
+            }
+        }
+        return ['named' => $named, 'values' => []];
+    }
+
+    /**
      * Get plugin configuration.
      *
      * Everything here is site-level admin config; nothing depends on the
      * context, the user or the editor instance. It reaches JS as
-     * `options.plugins['tiny_font_toolkit/plugin'].config` — see
+     * `options.plugins['tiny_font_toolkit/plugin'].config`, see
      * editor_tiny\manager::get_plugin_configuration().
      *
      * @param context $context
@@ -135,14 +167,21 @@ class plugininfo extends plugin implements plugin_with_configuration {
         array $fpoptions,
         ?editor $editor = null
     ): array {
+        $sizes = self::sizes(self::setting('sizes'));
+
         return [
-            'namedsizes' => self::pairs(self::setting('namedsizes')),
-            'fontsizes' => self::lines(self::optional('fontsizes')),
+            'namedsizes' => $sizes['named'],
+            'fontsizes' => $sizes['values'],
             'fontfamilies' => self::pairs(self::setting('fontfamilies')),
             'textcolors' => self::pairs(self::setting('textcolors')),
             'backgroundcolors' => self::pairs(self::setting('backgroundcolors')),
-            'customcolors' => self::enabled('customcolors'),
-            'removeformat' => self::enabled('removeformat'),
+            'customcolors' => self::flag('customcolors', true),
+            'removeformat' => self::flag('removeformat', true),
+            'fontsizeinput' => self::flag('fontsizeinput', false),
+            'toolbarsizes' => self::flag('toolbarsizes', true),
+            'toolbarfontfamilies' => self::flag('toolbarfontfamilies', true),
+            'toolbartextcolors' => self::flag('toolbartextcolors', true),
+            'toolbarbackgroundcolors' => self::flag('toolbarbackgroundcolors', true),
         ];
     }
 }

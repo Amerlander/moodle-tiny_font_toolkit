@@ -49,7 +49,7 @@ $string['default_fontfamilies'] = 'Theme-Standard|inherit
 Serif|Georgia, \'Times New Roman\', serif
 Sans Serif|system-ui, -apple-system, \'Segoe UI\', Roboto, sans-serif
 Monospace|ui-monospace, \'Cascadia Code\', \'Courier New\', monospace';
-$string['default_namedsizes'] = 'Klein|0.875rem
+$string['default_sizes'] = 'Klein|0.875rem
 Normal|1rem
 Groß|1.25rem
 Sehr groß|1.5rem';
@@ -65,20 +65,16 @@ Violett|#6b21a8
 Weiß|#ffffff';
 $string['familybutton'] = 'Schriftart';
 $string['fontfamilies'] = 'Schriftarten';
-$string['fontfamilies_desc'] = 'Einträge für das Schriftarten-Menü, eine pro Zeile als '
+$string['fontfamilies_desc'] = 'Einträge für den Schriftart-Wähler, eine pro Zeile als '
     . '<code>Bezeichnung|Font-Stack</code>. Der Stack darf kein Semikolon enthalten. '
-    . '<code>inherit</code> setzt auf die Theme-Schrift zurück. Leer lassen blendet das Menü aus.';
-$string['fontsizes'] = 'Exakte Größen';
-$string['fontsizes_desc'] = 'Ergänzt ein zweites Menü mit exakten CSS-Größen, eine pro Zeile mit '
-    . 'Einheit. Es trägt Werte statt Bezeichnungen und zeigt für Text ohne gesetzte Größe den vom '
-    . 'Browser berechneten Wert, etwa <code>16px</code>. Wird leer ausgeliefert; üblicherweise '
-    . 'genügen die benannten Größen oben.';
-$string['namedsizes'] = 'Größen';
-$string['namedsizes_desc'] = 'Einträge für den Größen-Wähler, eine pro Zeile als '
-    . '<code>Bezeichnung|Wert</code>, zum Beispiel <code>Groß|1.25rem</code>. <code>rem</code> '
-    . 'verwenden: es skaliert mit der Browser-Schriftgröße der Lesenden und potenziert sich, anders '
-    . 'als <code>em</code>, nicht innerhalb bereits vergrößerten Textes. Leer lassen blendet den '
-    . 'Wähler aus.';
+    . '<code>inherit</code> setzt auf die Theme-Schrift zurück. Leer lassen blendet den Wähler aus.';
+$string['fontsizeinput'] = 'Eingabefeld für Größen';
+$string['fontsizeinput_desc'] = 'Ergänzt die Toolbar um TinyMCEs Zahlenfeld für die Schriftgröße, '
+    . 'das die Schaltflächen zum Vergrößern und Verkleinern links und rechts davon mitbringt. '
+    . 'Eigenständige Schaltflächen dafür gibt es nicht. Das Feld akzeptiert <code>pt</code>, '
+    . '<code>px</code>, <code>em</code>, <code>cm</code> und <code>mm</code>, aber kein '
+    . '<code>rem</code> — eine hier eingegebene nackte Zahl passt also nicht zu Größen, die in '
+    . '<code>rem</code> konfiguriert sind.';
 $string['pluginname'] = 'Schrift-Toolkit';
 $string['privacy:metadata'] = 'Das Schrift-Toolkit ergänzt lediglich Editor-Bedienelemente, die auf '
     . 'Website-Ebene konfiguriert werden. Es speichert keine personenbezogenen Daten.';
@@ -86,7 +82,23 @@ $string['removeformat'] = 'Schaltfläche „Formate löschen"';
 $string['removeformat_desc'] = 'Ergänzt die Toolbar um TinyMCEs Schaltfläche zum Löschen der '
     . 'Formatierung. Im Format-Menü ist sie unabhängig von dieser Einstellung immer verfügbar.';
 $string['sizebutton'] = 'Größe';
+$string['sizes'] = 'Größen';
+$string['sizes_desc'] = 'Eine Größe pro Zeile. Mit Bezeichnung als <code>Bezeichnung|Wert</code> '
+    . 'geschrieben, etwa <code>Groß|1.25rem</code>, entsteht ein Wähler mit lesbaren Einträgen. '
+    . 'Stehen dort nackte Werte wie <code>1.25rem</code>, wird TinyMCEs eigenes Größen-Menü '
+    . 'verwendet, das den Wert selbst anzeigt und für Text ohne gesetzte Größe auf den vom Browser '
+    . 'berechneten Wert zurückfällt. <code>rem</code> verwenden: es skaliert mit der '
+    . 'Browser-Schriftgröße der Lesenden und potenziert sich, anders als <code>em</code>, nicht '
+    . 'innerhalb bereits vergrößerten Textes. Leer lassen blendet das Bedienelement aus.';
 $string['textcolors'] = 'Textfarben';
 $string['textcolors_desc'] = 'Einträge für den Textfarb-Wähler, eine pro Zeile als '
     . '<code>Bezeichnung|#rrggbb</code>. Die Bezeichnungen werden von Screenreadern vorgelesen, '
     . 'also die Farbe benennen, nicht ihren Zweck. Leer lassen blendet den Wähler aus.';
+$string['toolbarbackgroundcolors'] = 'Hintergrundfarbe in der Toolbar';
+$string['toolbarbackgroundcolors_desc'] = 'Aus lässt sie nur im Format-Menü.';
+$string['toolbarfontfamilies'] = 'Schriftarten in der Toolbar';
+$string['toolbarfontfamilies_desc'] = 'Aus lässt den Wähler nur im Format-Menü.';
+$string['toolbarsizes'] = 'Größen in der Toolbar';
+$string['toolbarsizes_desc'] = 'Aus lässt den Wähler nur im Format-Menü.';
+$string['toolbartextcolors'] = 'Textfarbe in der Toolbar';
+$string['toolbartextcolors_desc'] = 'Aus lässt sie nur im Format-Menü.';

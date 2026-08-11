@@ -20,23 +20,31 @@
  * `remove-formatting`, `text-color` and `highlight-bg-color` all ship with it.
  * It has no font size or font family icon, so those two are supplied here.
  *
- * Drawn as strokes on a 24x24 grid using currentColor, which is how TinyMCE
- * inlines and themes its own icons.
+ * Both are third-party icons under the MIT licence, which GPL-3.0 code may
+ * include:
+ *
+ * - Size: `font-size` from Iconoir, https://github.com/iconoir-icons/iconoir
+ * - Font: `fonts` from Bootstrap Icons, https://github.com/twbs/icons
+ *
+ * They are unmodified apart from replacing the `1em` width and height with 24,
+ * matching the size TinyMCE's own icons declare. Note the two come from
+ * different grids, 24 for Iconoir and 16 for Bootstrap Icons, so the second
+ * scales up and reads a little heavier.
  *
  * @module      tiny_font_toolkit/icons
  * @copyright   2026 Calliope gGmbH
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-const open = '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" '
-    + 'stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">';
+const size = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">'
+    + '<path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" '
+    + 'stroke-width="1.5" d="M18 21V11m0 10l-2-2.5m2 2.5l2-2.5M18 11l-2 2m2-2l2 2M9 5v12m0 0H7m2 '
+    + '0h2m4-10V5H3v2"/></svg>';
 
-// A large A beside a small one, the usual shorthand for a size picker.
-const size = `${open}<path d="M2 20 7.5 5 13 20"/><path d="M4.2 15.3h6.6"/>`
-    + '<path d="M15 20l3.4-8.5L21.8 20"/><path d="M16.2 17.3h4.4"/></svg>';
-
-// A slab-serif T: stem, cap and foot serifs, reading as a typeface.
-const family = `${open}<path d="M3.5 5.5h17"/><path d="M12 5.5v13"/><path d="M7.5 18.5h9"/></svg>`;
+const family = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 16 16">'
+    + '<path fill="currentColor" d="M12.258 3h-8.51l-.083 2.46h.479c.26-1.544.758-1.783 2.693-1.845'
+    + 'l.424-.013v7.827c0 .663-.144.82-1.3.923v.52h4.082v-.52c-1.162-.103-1.306-.26-1.306-.923V3.602'
+    + 'l.431.013c1.934.062 2.434.301 2.693 1.846h.479z"/></svg>';
 
 /**
  * Register this plugin's icons with the editor.

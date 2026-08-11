@@ -49,11 +49,16 @@ Notifications to finish the install.
 | Control | Backed by |
 | --- | --- |
 | Size picker with named entries | The `FontSize` editor command |
-| Font picker with named entries | The `FontName` editor command |
-| Exact size dropdown, off by default | `fontsize`, via `font_size_formats` |
+| Size dropdown for bare values | `fontsize`, via `font_size_formats` |
+| Font picker | The `FontName` editor command |
 | Text colour | `forecolor`, via `color_map_foreground` |
 | Background colour | `backcolor`, via `color_map_background` |
+| Size entry field with increase and decrease | `fontsizeinput` |
 | Clear formatting | `removeformat` |
+
+One setting drives both size controls. A list that names its entries
+(`Large|1.25rem`) gets the labelled picker; a list of bare values (`1.25rem`)
+gets TinyMCE's native dropdown.
 
 The size and font pickers are registered by the plugin rather than reused from
 TinyMCE, so that they can carry a label and an icon. The native alternatives
@@ -63,9 +68,15 @@ unstyled text reads as `16px`, and native nested menu items reference no icon at
 all. Applying a size or a font still goes through the editor's own formatter, via
 the built-in `FontSize` and `FontName` commands.
 
+TinyMCE has no standalone increase and decrease buttons for font size. They come
+attached to the `fontsizeinput` field, which is why enabling them means enabling
+that field. It sits in its own toolbar group, since TinyMCE's documentation warns
+against presenting `fontsize` and `fontsizeinput` together.
+
 TinyMCE's icon pack covers the native controls (`remove-formatting`,
-`text-color`, `highlight-bg-color`) but has no font size or font family icon, so
-`amd/src/icons.js` supplies those two.
+`text-color`, `highlight-bg-color`) but has no font size or font family icon.
+`amd/src/icons.js` supplies those two from Iconoir and Bootstrap Icons, both MIT
+licensed.
 
 The two colour pickers take separate palettes, so the background list can hold
 the pale tints that highlighting needs without those appearing as text colours.
@@ -76,16 +87,22 @@ Site administration » Plugins » Text editors » TinyMCE editor » Font toolkit
 
 | Setting | Value |
 | --- | --- |
-| Sizes | `Label\|value` per line, for example `Large\|1.25rem` |
-| Exact sizes | One CSS size per line; ships empty |
+| Sizes | One per line, either `Label\|value` or a bare value |
 | Font families | `Label\|font stack` per line; the stack cannot contain `;` |
 | Text colours | `Label\|#rrggbb` per line |
 | Background colours | `Label\|#rrggbb` per line; ships with pale tints only |
+| Size entry field | Adds `fontsizeinput` with its increase and decrease buttons; off by default |
 | Allow free colour choice | Adds the full colour picker to both swatches; on by default |
 | Clear formatting button | Adds `removeformat` to the toolbar; on by default |
 
-Clearing a list setting removes its control. An empty background colour list
-means no highlight button rather than an empty picker.
+Each list has a checkbox for whether its control appears in the toolbar, on by
+default. Turning it off leaves the control in the Format menu.
+
+Clearing a list setting removes its control from both. An empty background colour
+list means no highlight button rather than an empty picker.
+
+The size entry field accepts `pt`, `px`, `em`, `cm` and `mm` but not `rem`, so a
+bare number typed into it will not match sizes configured in `rem`.
 
 The shipped sizes are in `rem`, which scales with the reader's browser font size
 and does not compound when applied inside text that already carries a size. Do

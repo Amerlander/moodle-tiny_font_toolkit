@@ -27,8 +27,12 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-import {addMenubarItem, addToolbarButtons} from 'editor_tiny/utils';
-import {familyButtonName, pluginName, sizeButtonName} from './common';
+import {addMenubarItem, addToolbarButtons, addToolbarSection} from 'editor_tiny/utils';
+import {component, familyButtonName, pluginName, sizeButtonName} from './common';
+
+// TinyMCE's docs warn that `fontsize` and `fontsizeinput` should not be
+// presented together, so the input gets a toolbar section of its own.
+const inputSectionName = `${component}_input`;
 
 /**
  * Get this plugin's admin settings, as returned by plugininfo.php.
@@ -62,17 +66,26 @@ export const configure = (instanceConfig, options) => {
     const textColors = config.textcolors ?? [];
     const backgroundColors = config.backgroundcolors ?? [];
 
-    // Only offer a control once it has something to show. An admin who clears a
-    // setting gets the control removed rather than an empty dropdown.
-    const items = [];
+    // A control always reaches the Format menu; its checkbox decides whether it
+    // also reaches the toolbar. An empty list removes it from both, so an admin
+    // who clears a setting gets no control rather than an empty dropdown.
+    const menuItems = [];
+    const toolbarItems = [];
     const override = {};
 
-    if (namedSizes.length) {
-        items.push(sizeButtonName);
-    }
+    const place = (name, inToolbar) => {
+        menuItems.push(name);
+        if (inToolbar) {
+            toolbarItems.push(name);
+        }
+    };
 
-    if (sizes.length) {
-        items.push('fontsize');
+    // One admin setting drives both size controls, and plugininfo.php decides
+    // which by looking for labels: exactly one of these two lists is populated.
+    if (namedSizes.length) {
+        place(sizeButtonName, config.toolbarsizes);
+    } else if (sizes.length) {
+        place('fontsize', config.toolbarsizes);
         // eslint-disable-next-line camelcase
         override.font_size_formats = sizes.join(' ');
     }
@@ -81,14 +94,14 @@ export const configure = (instanceConfig, options) => {
     // font_family_formats: TinyMCE's native control cannot carry an icon, and
     // its nested menu entry shows none at all.
     if (families.length) {
-        items.push(familyButtonName);
+        place(familyButtonName, config.toolbarfontfamilies);
     }
 
     // The two pickers take separate palettes, so a background list can hold the
     // pale tints that highlighting needs without those turning up as text
     // colours.
     if (textColors.length) {
-        items.push('forecolor');
+        place('forecolor', config.toolbartextcolors);
         // eslint-disable-next-line camelcase
         override.color_map_foreground = toColorMap(textColors);
         // eslint-disable-next-line camelcase
@@ -96,7 +109,7 @@ export const configure = (instanceConfig, options) => {
     }
 
     if (backgroundColors.length) {
-        items.push('backcolor');
+        place('backcolor', config.toolbarbackgroundcolors);
         // eslint-disable-next-line camelcase
         override.color_map_background = toColorMap(backgroundColors);
         // eslint-disable-next-line camelcase
@@ -110,16 +123,29 @@ export const configure = (instanceConfig, options) => {
 
     // Moodle already lists removeformat in the Format menu, so it goes to the
     // toolbar only.
-    const toolbarItems = config.removeformat ? [...items, 'removeformat'] : items;
-
-    if (!toolbarItems.length) {
-        return {};
+    if (config.removeformat) {
+        toolbarItems.push('removeformat');
     }
 
-    override.toolbar = addToolbarButtons(instanceConfig.toolbar, 'formatting', toolbarItems);
+    // The font size input cannot live in a menu, being a text entry field, so it
+    // is toolbar only. It brings TinyMCE's increase and decrease buttons with
+    // it; there are no standalone toolbar items for those.
+    if (toolbarItems.length || config.fontsizeinput) {
+        // addToolbarButtons returns a copy, addToolbarSection mutates what it is
+        // given. Taking the copy first keeps Moodle's own config object out of
+        // it.
+        let toolbar = addToolbarButtons(instanceConfig.toolbar, 'formatting', toolbarItems);
 
-    if (items.length) {
-        override.menu = addMenubarItem(instanceConfig.menu, 'format', items.join(' '));
+        if (config.fontsizeinput) {
+            toolbar = addToolbarSection(toolbar, inputSectionName, 'formatting');
+            toolbar = addToolbarButtons(toolbar, inputSectionName, ['fontsizeinput']);
+        }
+
+        override.toolbar = toolbar;
+    }
+
+    if (menuItems.length) {
+        override.menu = addMenubarItem(instanceConfig.menu, 'format', menuItems.join(' '));
     }
 
     return override;

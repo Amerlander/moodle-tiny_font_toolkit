@@ -49,7 +49,7 @@ $string['default_fontfamilies'] = 'Theme default|inherit
 Serif|Georgia, \'Times New Roman\', serif
 Sans serif|system-ui, -apple-system, \'Segoe UI\', Roboto, sans-serif
 Monospace|ui-monospace, \'Cascadia Code\', \'Courier New\', monospace';
-$string['default_namedsizes'] = 'Small|0.875rem
+$string['default_sizes'] = 'Small|0.875rem
 Normal|1rem
 Large|1.25rem
 Extra large|1.5rem';
@@ -65,19 +65,15 @@ Purple|#6b21a8
 White|#ffffff';
 $string['familybutton'] = 'Font';
 $string['fontfamilies'] = 'Font families';
-$string['fontfamilies_desc'] = 'Entries for the font family dropdown, one per line as '
+$string['fontfamilies_desc'] = 'Entries for the font picker, one per line as '
     . '<code>Label|font stack</code>. The stack must not contain a semicolon. <code>inherit</code> '
-    . 'resets to the theme font. Leave empty to hide the dropdown.';
-$string['fontsizes'] = 'Exact sizes';
-$string['fontsizes_desc'] = 'Adds a second dropdown listing exact CSS sizes, one per line with a '
-    . 'unit. It carries values rather than labels, and shows the browser\'s computed size such as '
-    . '<code>16px</code> for text that has none set. Ships empty; the named sizes above are the '
-    . 'usual choice.';
-$string['namedsizes'] = 'Sizes';
-$string['namedsizes_desc'] = 'Entries for the size picker, one per line as <code>Label|value</code>, '
-    . 'for example <code>Large|1.25rem</code>. Use <code>rem</code>: it scales with the reader\'s '
-    . 'browser font size and, unlike <code>em</code>, does not multiply when applied inside '
-    . 'already-sized text. Leave empty to hide the picker.';
+    . 'resets to the theme font. Leave empty to hide the picker.';
+$string['fontsizeinput'] = 'Size entry field';
+$string['fontsizeinput_desc'] = 'Adds TinyMCE\'s numeric size field to the toolbar, which comes with '
+    . 'the increase and decrease buttons on either side of it. There are no standalone buttons for '
+    . 'those. The field takes <code>pt</code>, <code>px</code>, <code>em</code>, <code>cm</code> or '
+    . '<code>mm</code> but not <code>rem</code>, so a bare number entered here will not match sizes '
+    . 'configured in <code>rem</code>.';
 $string['pluginname'] = 'Font toolkit';
 $string['privacy:metadata'] = 'The Font toolkit plugin only adds editor controls configured at site '
     . 'level. It stores no personal data.';
@@ -85,7 +81,22 @@ $string['removeformat'] = 'Clear formatting button';
 $string['removeformat_desc'] = 'Adds TinyMCE\'s clear formatting button to the toolbar. It is always '
     . 'available in the Format menu regardless of this setting.';
 $string['sizebutton'] = 'Size';
+$string['sizes'] = 'Sizes';
+$string['sizes_desc'] = 'One size per line. Name them as <code>Label|value</code>, for example '
+    . '<code>Large|1.25rem</code>, to get a picker with readable entries. Give bare values instead, '
+    . 'such as <code>1.25rem</code>, and TinyMCE\'s own size dropdown is used, which shows the value '
+    . 'itself and falls back to the browser\'s computed size for text that has none set. Use '
+    . '<code>rem</code>: it scales with the reader\'s browser font size and, unlike <code>em</code>, '
+    . 'does not multiply when applied inside already-sized text. Leave empty to hide the control.';
 $string['textcolors'] = 'Text colours';
 $string['textcolors_desc'] = 'Entries for the text colour picker, one per line as '
     . '<code>Label|#rrggbb</code>. Labels are read out by screen readers, so name the colour rather '
     . 'than its purpose. Leave empty to hide the picker.';
+$string['toolbarbackgroundcolors'] = 'Background colour in the toolbar';
+$string['toolbarbackgroundcolors_desc'] = 'Off leaves it in the Format menu only.';
+$string['toolbarfontfamilies'] = 'Fonts in the toolbar';
+$string['toolbarfontfamilies_desc'] = 'Off leaves the picker in the Format menu only.';
+$string['toolbarsizes'] = 'Sizes in the toolbar';
+$string['toolbarsizes_desc'] = 'Off leaves the picker in the Format menu only.';
+$string['toolbartextcolors'] = 'Text colour in the toolbar';
+$string['toolbartextcolors_desc'] = 'Off leaves it in the Format menu only.';
