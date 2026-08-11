@@ -26,9 +26,9 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'tiny_font_toolkit';
-$plugin->release = '1.6.0';
+$plugin->release = '1.6.1';
 $plugin->maturity = MATURITY_STABLE;
 // Moodle 4.1: editor_tiny, plugin_with_configuration and the
 // addToolbarButtons/addMenubarItem helpers all exist from this point on.
 $plugin->requires = 2022112800;
-$plugin->version = 2026081106;
+$plugin->version = 2026081107;

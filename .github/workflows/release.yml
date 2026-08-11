@@ -5,8 +5,10 @@
 # the tag and nothing from the working tree. .gitattributes marks the CI
 # directory export-ignore, keeping it out.
 #
-# Tag after CI is green: this runs on the tag push and does not wait for the
-# per-version workflows.
+# Nothing is published until every per-version check has passed for the same
+# commit. A tag push starts those workflows alongside this one, so the job builds
+# the archive, keeps it as a workflow artifact, and only then waits on them. A
+# failed check leaves the artifact for inspection and no release.
 
 name: Release
 
@@ -23,6 +25,8 @@ on:
 
 permissions:
   contents: write
+  # To read the conclusions of the per-version checks before publishing.
+  actions: read
 
 jobs:
   release:
@@ -89,6 +93,55 @@ jobs:
           release=$(sed -n "s/.*release *= *'\([^']*\)'.*/\1/p" dist/font_toolkit/version.php)
           test "v${release}" = "${tag}"
           echo "version.php reports ${release}, tag is ${tag}"
+
+      - name: Keep the archive whether or not it gets published
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.build.outputs.zip }}
+          path: ${{ steps.build.outputs.zip }}
+          if-no-files-found: error
+
+      - name: Wait for every version check to pass
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -uo pipefail
+
+          # The per-version workflows run on tag pushes too, so they are keyed to
+          # the same commit as this job.
+          sha=$(git -C plugin rev-parse HEAD)
+          required=$(ls plugin/.github/workflows/moodle-*.yml | wc -l)
+          deadline=$(( $(date +%s) + 2400 ))
+          echo "Waiting for ${required} checks on ${sha}"
+
+          while :; do
+            runs=$(gh api \
+              "repos/${GITHUB_REPOSITORY}/actions/runs?head_sha=${sha}&per_page=100" \
+              --jq '[.workflow_runs[] | select(.name | startswith("Moodle "))
+                     | {name, status, conclusion}]')
+
+            failed=$(jq -r '[.[] | select(.status == "completed")
+                              | select(.conclusion != "success") | .name]
+                            | unique | join(", ")' <<<"${runs}")
+            if [ -n "${failed}" ]; then
+              echo "::error::Not publishing ${sha}: ${failed} did not pass."
+              exit 1
+            fi
+
+            passed=$(jq '[.[] | select(.conclusion == "success") | .name] | unique | length' <<<"${runs}")
+            if [ "${passed}" -ge "${required}" ]; then
+              echo "All ${passed} version checks passed."
+              break
+            fi
+
+            if [ "$(date +%s)" -ge "${deadline}" ]; then
+              echo "::error::Timed out with ${passed}/${required} checks passed."
+              exit 1
+            fi
+
+            echo "  ${passed}/${required} passed, waiting."
+            sleep 30
+          done
 
       - name: Attach it to the release
         env:

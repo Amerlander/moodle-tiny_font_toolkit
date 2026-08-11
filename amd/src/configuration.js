@@ -38,10 +38,20 @@ const inputSectionName = `${component}_input`;
 /**
  * Get this plugin's admin settings, as returned by plugininfo.php.
  *
+ * Written without optional chaining and nullish coalescing on purpose. Moodle's
+ * Grunt hands those to Babel, which down-levels them differently depending on
+ * the browser targets each Moodle release carries, so one committed build cannot
+ * satisfy the staleness check on 4.1 and on 5.1 at the same time.
+ *
  * @param {object} options The editor setup options
  * @returns {object}
  */
-const getPluginConfig = (options) => options?.plugins?.[pluginName]?.config ?? {};
+const getPluginConfig = (options) => {
+    const plugins = options && options.plugins ? options.plugins : {};
+    const plugin = plugins[pluginName];
+
+    return plugin && plugin.config ? plugin.config : {};
+};
 
 /**
  * Flatten [label, value] pairs into TinyMCE's alternating colour list.
@@ -61,11 +71,11 @@ const toColorMap = (colors) => colors.flatMap(([label, value]) => [value, label]
 export const configure = (instanceConfig, options) => {
     const config = getPluginConfig(options);
 
-    const namedSizes = config.namedsizes ?? [];
-    const sizes = config.fontsizes ?? [];
-    const families = config.fontfamilies ?? [];
-    const textColors = config.textcolors ?? [];
-    const backgroundColors = config.backgroundcolors ?? [];
+    const namedSizes = config.namedsizes || [];
+    const sizes = config.fontsizes || [];
+    const families = config.fontfamilies || [];
+    const textColors = config.textcolors || [];
+    const backgroundColors = config.backgroundcolors || [];
 
     // A control always reaches the Format menu; its checkbox decides whether it
     // also reaches the toolbar. An empty list removes it from both, so an admin
