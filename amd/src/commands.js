@@ -50,7 +50,7 @@ import {getFontFamilies, getNamedSizes} from './options';
  * @param {object} picker
  * @param {string} picker.name Registry name
  * @param {string} picker.icon Icon name
- * @param {string} picker.label Button text and tooltip
+ * @param {string} picker.label Menu entry text, and the button's tooltip
  * @param {string} picker.command Built-in editor command to apply a value
  * @param {Array[]} picker.entries [label, value] pairs
  */
@@ -61,13 +61,16 @@ const addPicker = (editor, {name, icon, label, command, entries}) => {
         onAction: () => editor.execCommand(command, false, value),
     }));
 
+    // The toolbar button carries no text, matching every other button in
+    // Moodle's TinyMCE toolbar. Passing `tooltip` without `text` keeps the
+    // control named for hover and for assistive technology.
     editor.ui.registry.addMenuButton(name, {
         icon,
-        text: label,
         tooltip: label,
         fetch: (callback) => callback(getItems()),
     });
 
+    // A menu entry does need its text.
     editor.ui.registry.addNestedMenuItem(name, {
         icon,
         text: label,
