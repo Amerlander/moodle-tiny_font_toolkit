@@ -108,9 +108,10 @@ jobs:
           set -uo pipefail
 
           # The per-version workflows run on tag pushes too, so they are keyed to
-          # the same commit as this job.
-          sha=$(git -C plugin rev-parse HEAD)
-          required=$(ls plugin/.github/workflows/moodle-*.yml | wc -l)
+          # the same commit as this job. Note this workflow checks out at the
+          # workspace root, unlike build-amd.yml which uses a plugin/ subdirectory.
+          sha=$(git rev-parse HEAD)
+          required=$(ls .github/workflows/moodle-*.yml | wc -l)
           deadline=$(( $(date +%s) + 2400 ))
           echo "Waiting for ${required} checks on ${sha}"
 

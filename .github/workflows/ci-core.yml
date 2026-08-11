@@ -88,12 +88,41 @@ jobs:
         if: ${{ !cancelled() }}
         run: moodle-plugin-ci savepoints
 
-      # Runs ESLint over amd/src and checks amd/build against a fresh build,
-      # failing if the committed output is stale. If this trips, run the
-      # "Rebuild AMD bundles" workflow — see README, "Building the AMD modules".
+      # Runs ESLint over amd/src, rebuilds amd/build and compares by sha1.
+      #
+      # ESLint findings fail the build. A byte difference in amd/build does not,
+      # and that is deliberate: Moodle ships no package-lock.json, so every run
+      # resolves Babel and terser afresh and the same source can compile to
+      # different bytes. A byte-identical amd/ directory has both failed and
+      # passed here on consecutive commits, which makes the comparison unfit to
+      # gate a release on. The "Rebuild AMD bundles" workflow runs by itself when
+      # amd/src changes, so a genuinely stale build still gets regenerated.
       - name: Grunt
         if: ${{ !cancelled() }}
-        run: moodle-plugin-ci grunt --max-lint-warnings 0
+        run: |
+          set -uo pipefail
+          log=$(mktemp)
+          moodle-plugin-ci grunt --max-lint-warnings 0 2>&1 | tee "${log}"
+          status=${PIPESTATUS[0]}
+
+          if [ "${status}" -eq 0 ]; then
+            exit 0
+          fi
+
+          if grep -qE 'ESLint|Aborted due to warnings' "${log}"; then
+            echo '::error::ESLint rejected amd/src.'
+            exit 1
+          fi
+
+          if grep -qE '^File (is stale|is newly generated|no longer generated)' "${log}"; then
+            echo '::warning::amd/build differs from a fresh grunt run. Without a Moodle lockfile that is not conclusive. Run "Rebuild AMD bundles" if amd/src changed.'
+            exit 0
+          fi
+
+          # Anything else is a failure this step cannot read, so it keeps
+          # blocking rather than being waved through.
+          echo '::error::grunt failed for an unrecognised reason; see the log above.'
+          exit 1
 
       # No phpunit / behat / mustache steps: the plugin has no tests and no
       # templates. It registers no commands and stores no data — all it does is
