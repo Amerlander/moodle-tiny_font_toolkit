@@ -1,5 +1,10 @@
-# Rebuilds amd/build from amd/src using Moodle's own Grunt pipeline, and commits
-# the result. Run this manually after editing anything in amd/src.
+# Rebuilds amd/build from amd/src using Moodle's own Grunt pipeline, commits the
+# result, and kicks off the per-version CI workflows against it.
+#
+# It runs by itself whenever amd/src changes on main, so a source change settles
+# on its own. Expect the CI run that starts alongside the push to report the
+# build as stale, since at that moment it is; the run this job triggers afterwards
+# is the one that counts. Dispatch manually to rebuild without a source change.
 #
 # Why Moodle's Grunt and not a local `npm run build`: Moodle's AMD output is
 # Rollup + Babel with three plugins, one of which is Moodle's own
@@ -24,10 +29,17 @@
 name: Rebuild AMD bundles
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'amd/src/**'
   workflow_dispatch:
 
 permissions:
   contents: write
+  # To dispatch the CI workflows once the rebuilt bundles are committed.
+  actions: write
 
 env:
   MOODLE_BRANCH: MOODLE_501_STABLE
@@ -110,6 +122,7 @@ jobs:
           grep -q 'return _exports\.default' plugin/amd/build/plugin.min.js
 
       - name: Commit the rebuilt bundles
+        id: commit
         working-directory: plugin
         run: |
           set -eux
@@ -118,7 +131,22 @@ jobs:
           git add amd/build
           if git diff --cached --quiet; then
             echo 'amd/build is already up to date with amd/src.'
+            echo 'committed=no' >> "$GITHUB_OUTPUT"
           else
             git commit -m "Rebuild amd/build with Moodle's Grunt pipeline"
             git push
+            echo 'committed=yes' >> "$GITHUB_OUTPUT"
           fi
+
+      - name: Run CI against the rebuilt bundles
+        if: steps.commit.outputs.committed == 'yes'
+        working-directory: plugin
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -eux
+          # A commit made with GITHUB_TOKEN deliberately triggers no workflows, so
+          # without this the badges would keep showing the pre-rebuild result.
+          for workflow in moodle-4.5.yml moodle-5.0.yml moodle-5.1.yml; do
+            gh workflow run "${workflow}" --ref "${GITHUB_REF_NAME}"
+          done
