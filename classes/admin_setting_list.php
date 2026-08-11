@@ -50,8 +50,15 @@ class admin_setting_list extends \admin_setting_configtextarea {
      * @param string $cols
      * @param string $rows
      */
-    public function __construct($name, $visiblename, $description, $defaultsetting,
-            $paramtype = PARAM_RAW, $cols = '60', $rows = '8') {
+    public function __construct(
+        $name,
+        $visiblename,
+        $description,
+        $defaultsetting,
+        $paramtype = PARAM_RAW,
+        $cols = '60',
+        $rows = '8'
+    ) {
         $this->listcols = $cols;
         $this->listrows = $rows;
         parent::__construct($name, $visiblename, $description, $defaultsetting, $paramtype, $cols, $rows);
