@@ -16,11 +16,11 @@
 /**
  * Editor options for tiny_font_toolkit.
  *
- * The named sizes are needed when the editor is set up rather than while its
- * configuration is being assembled, so they are registered as an editor option.
- * Moodle namespaces this plugin's PHP config into the TinyMCE init values under
- * exactly these names — see getInitialPluginConfiguration() in
- * editor_tiny/options — so registering the option is enough to read the value.
+ * The size and font family lists are needed when the editor is set up rather
+ * than while its configuration is being assembled, so they are registered as
+ * editor options. Moodle namespaces this plugin's PHP config into the TinyMCE
+ * init values under exactly these names, see getInitialPluginConfiguration() in
+ * editor_tiny/options, so registering the option is enough to read the value.
  *
  * @module      tiny_font_toolkit/options
  * @copyright   2026 Calliope gGmbH
@@ -31,6 +31,7 @@ import {getPluginOptionName} from 'editor_tiny/options';
 import {pluginName} from './common';
 
 const namedSizesName = getPluginOptionName(pluginName, 'namedsizes');
+const fontFamiliesName = getPluginOptionName(pluginName, 'fontfamilies');
 
 /**
  * Register this plugin's editor options.
@@ -39,6 +40,11 @@ const namedSizesName = getPluginOptionName(pluginName, 'namedsizes');
  */
 export const register = (editor) => {
     editor.options.register(namedSizesName, {
+        processor: 'array',
+        "default": [],
+    });
+
+    editor.options.register(fontFamiliesName, {
         processor: 'array',
         "default": [],
     });
@@ -51,3 +57,11 @@ export const register = (editor) => {
  * @returns {Array[]}
  */
 export const getNamedSizes = (editor) => editor.options.get(namedSizesName);
+
+/**
+ * Get the configured font families as [label, stack] pairs.
+ *
+ * @param {TinyMCE} editor
+ * @returns {Array[]}
+ */
+export const getFontFamilies = (editor) => editor.options.get(fontFamiliesName);

@@ -14,16 +14,16 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * The named-size picker for tiny_font_toolkit.
+ * The size and font family pickers for tiny_font_toolkit.
  *
- * This is a picker with a fixed label and readable entry names, which the native
- * controls cannot provide: TinyMCE's `styles` dropdown is labelled "Formats" and
- * offers no way to rename it, and its `fontsize` dropdown carries values without
- * labels and falls back to the browser's computed size, so unstyled text reads
- * as "16px".
+ * Both are registered here rather than reused from TinyMCE, for two reasons.
+ * They can then carry a label and an icon: TinyMCE's `styles` dropdown is fixed
+ * to "Formats" with no way to rename it, its `fontsize` dropdown carries values
+ * without labels and falls back to the browser's computed size so unstyled text
+ * reads as "16px", and its native nested menu items reference no icon at all.
  *
- * Applying a size still goes through TinyMCE. `FontSize` is a built-in editor
- * command that takes any valid CSS font size, so the editor's own formatter does
+ * Applying a size or a font still goes through TinyMCE. `FontSize` and
+ * `FontName` are built-in editor commands, so the editor's own formatter does
  * the work and partial selections, nesting, undo and redo behave normally.
  *
  * @module      tiny_font_toolkit/commands
@@ -32,8 +32,47 @@
  */
 
 import {getString} from 'core/str';
-import {component, sizeButtonName} from './common';
-import {getNamedSizes} from './options';
+import {
+    component,
+    familyButtonName,
+    familyIconName,
+    sizeButtonName,
+    sizeIconName,
+} from './common';
+import * as Icons from './icons';
+import {getFontFamilies, getNamedSizes} from './options';
+
+/**
+ * Register one picker as both a toolbar button and a Format menu entry.
+ *
+ * @param {TinyMCE} editor
+ * @param {object} picker
+ * @param {string} picker.name Registry name
+ * @param {string} picker.icon Icon name
+ * @param {string} picker.label Button text and tooltip
+ * @param {string} picker.command Built-in editor command to apply a value
+ * @param {Array[]} picker.entries [label, value] pairs
+ */
+const addPicker = (editor, {name, icon, label, command, entries}) => {
+    const getItems = () => entries.map(([text, value]) => ({
+        type: 'menuitem',
+        text,
+        onAction: () => editor.execCommand(command, false, value),
+    }));
+
+    editor.ui.registry.addMenuButton(name, {
+        icon,
+        text: label,
+        tooltip: label,
+        fetch: (callback) => callback(getItems()),
+    });
+
+    editor.ui.registry.addNestedMenuItem(name, {
+        icon,
+        text: label,
+        getSubmenuItems: getItems,
+    });
+};
 
 /**
  * Build the editor setup function.
@@ -41,29 +80,34 @@ import {getNamedSizes} from './options';
  * @returns {Function}
  */
 export const getSetup = async() => {
-    const buttonText = await getString('sizebutton', component);
+    const [sizeLabel, familyLabel] = await Promise.all([
+        getString('sizebutton', component),
+        getString('familybutton', component),
+    ]);
 
     return (editor) => {
+        Icons.register(editor, sizeIconName, familyIconName);
+
         const sizes = getNamedSizes(editor);
-        if (!sizes.length) {
-            return;
+        if (sizes.length) {
+            addPicker(editor, {
+                name: sizeButtonName,
+                icon: sizeIconName,
+                label: sizeLabel,
+                command: 'FontSize',
+                entries: sizes,
+            });
         }
 
-        const getItems = () => sizes.map(([text, size]) => ({
-            type: 'menuitem',
-            text,
-            onAction: () => editor.execCommand('FontSize', false, size),
-        }));
-
-        editor.ui.registry.addMenuButton(sizeButtonName, {
-            text: buttonText,
-            tooltip: buttonText,
-            fetch: (callback) => callback(getItems()),
-        });
-
-        editor.ui.registry.addNestedMenuItem(sizeButtonName, {
-            text: buttonText,
-            getSubmenuItems: getItems,
-        });
+        const families = getFontFamilies(editor);
+        if (families.length) {
+            addPicker(editor, {
+                name: familyButtonName,
+                icon: familyIconName,
+                label: familyLabel,
+                command: 'FontName',
+                entries: families,
+            });
+        }
     };
 };

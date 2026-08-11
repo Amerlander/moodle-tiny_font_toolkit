@@ -63,6 +63,7 @@ Teal|#00696e
 Blue|#1155cc
 Purple|#6b21a8
 White|#ffffff';
+$string['familybutton'] = 'Font';
 $string['fontfamilies'] = 'Font families';
 $string['fontfamilies_desc'] = 'Entries for the font family dropdown, one per line as '
     . '<code>Label|font stack</code>. The stack must not contain a semicolon. <code>inherit</code> '

@@ -49,18 +49,23 @@ Notifications to finish the install.
 | Control | Backed by |
 | --- | --- |
 | Size picker with named entries | The `FontSize` editor command |
+| Font picker with named entries | The `FontName` editor command |
 | Exact size dropdown, off by default | `fontsize`, via `font_size_formats` |
-| Font family dropdown | `fontfamily`, via `font_family_formats` |
 | Text colour | `forecolor`, via `color_map_foreground` |
 | Background colour | `backcolor`, via `color_map_background` |
 | Clear formatting | `removeformat` |
 
-The size picker is the one control the plugin registers itself, because the
-native ones cannot be labelled: TinyMCE's `styles` dropdown is fixed to
-"Formats", and its `fontsize` dropdown carries values without labels and falls
-back to the browser's computed size, so unstyled text reads as `16px`. Applying a
-size still goes through the editor's own formatter via the built-in `FontSize`
-command.
+The size and font pickers are registered by the plugin rather than reused from
+TinyMCE, so that they can carry a label and an icon. The native alternatives
+cannot: the `styles` dropdown is fixed to "Formats", the `fontsize` dropdown
+carries values without labels and falls back to the browser's computed size so
+unstyled text reads as `16px`, and native nested menu items reference no icon at
+all. Applying a size or a font still goes through the editor's own formatter, via
+the built-in `FontSize` and `FontName` commands.
+
+TinyMCE's icon pack covers the native controls (`remove-formatting`,
+`text-color`, `highlight-bg-color`) but has no font size or font family icon, so
+`amd/src/icons.js` supplies those two.
 
 The two colour pickers take separate palettes, so the background list can hold
 the pale tints that highlighting needs without those appearing as text colours.

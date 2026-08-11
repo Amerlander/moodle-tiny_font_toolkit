@@ -63,6 +63,7 @@ Petrol|#00696e
 Blau|#1155cc
 Violett|#6b21a8
 Weiß|#ffffff';
+$string['familybutton'] = 'Schriftart';
 $string['fontfamilies'] = 'Schriftarten';
 $string['fontfamilies_desc'] = 'Einträge für das Schriftarten-Menü, eine pro Zeile als '
     . '<code>Bezeichnung|Font-Stack</code>. Der Stack darf kein Semikolon enthalten. '

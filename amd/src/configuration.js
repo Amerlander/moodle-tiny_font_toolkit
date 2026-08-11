@@ -28,7 +28,7 @@
  */
 
 import {addMenubarItem, addToolbarButtons} from 'editor_tiny/utils';
-import {pluginName, sizeButtonName} from './common';
+import {familyButtonName, pluginName, sizeButtonName} from './common';
 
 /**
  * Get this plugin's admin settings, as returned by plugininfo.php.
@@ -77,13 +77,11 @@ export const configure = (instanceConfig, options) => {
         override.font_size_formats = sizes.join(' ');
     }
 
+    // The font list goes to the picker registered in commands.js rather than to
+    // font_family_formats: TinyMCE's native control cannot carry an icon, and
+    // its nested menu entry shows none at all.
     if (families.length) {
-        items.push('fontfamily');
-        // TinyMCE wants `title=stack` entries separated by semicolons.
-        // eslint-disable-next-line camelcase
-        override.font_family_formats = families
-            .map(([title, stack]) => `${title}=${stack}`)
-            .join('; ');
+        items.push(familyButtonName);
     }
 
     // The two pickers take separate palettes, so a background list can hold the

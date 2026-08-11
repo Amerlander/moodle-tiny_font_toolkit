@@ -28,6 +28,13 @@ export const component = 'tiny_font_toolkit';
 // PHP config arrives under in `options.plugins`.
 export const pluginName = `${component}/plugin`;
 
-// The named-size picker is the one control this plugin registers itself, so it
-// needs a name of its own. Everything else reuses a native TinyMCE item name.
+// The size and font family pickers are registered by this plugin rather than
+// reused from TinyMCE, so they need names of their own. Everything else uses a
+// native item name.
 export const sizeButtonName = `${component}_size`;
+export const familyButtonName = `${component}_family`;
+
+// Icon names, registered in icons.js. TinyMCE's pack has no font size or font
+// family icon.
+export const sizeIconName = `${component}_size_icon`;
+export const familyIconName = `${component}_family_icon`;
