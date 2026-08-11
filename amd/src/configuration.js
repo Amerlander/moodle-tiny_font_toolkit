@@ -140,6 +140,10 @@ export const configure = (instanceConfig, options) => {
         if (config.fontsizeinput) {
             toolbar = addToolbarSection(toolbar, inputSectionName, 'formatting');
             toolbar = addToolbarButtons(toolbar, inputSectionName, ['fontsizeinput']);
+            // What a bare number typed into the field means. TinyMCE would
+            // otherwise read it as pt.
+            // eslint-disable-next-line camelcase
+            override.font_size_input_default_unit = config.fontsizeinputunit;
         }
 
         override.toolbar = toolbar;

@@ -58,6 +58,16 @@ if ($ADMIN->fulltree) {
         0
     ));
 
+    // TinyMCE accepts only these five for font_size_input_default_unit, so the
+    // list is fixed rather than free text. Unit names are not translated.
+    $settings->add(new admin_setting_configselect(
+        'tiny_font_toolkit/fontsizeinputunit',
+        new lang_string('fontsizeinputunit', 'tiny_font_toolkit'),
+        new lang_string('fontsizeinputunit_desc', 'tiny_font_toolkit'),
+        'em',
+        ['em' => 'em', 'pt' => 'pt', 'px' => 'px', 'cm' => 'cm', 'mm' => 'mm']
+    ));
+
     $settings->add(new admin_setting_configtextarea(
         'tiny_font_toolkit/fontfamilies',
         new lang_string('fontfamilies', 'tiny_font_toolkit'),

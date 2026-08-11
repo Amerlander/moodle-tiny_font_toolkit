@@ -98,6 +98,7 @@ Site administration » Plugins » Text editors » TinyMCE editor » Font toolkit
 | Text colours | `Label\|#rrggbb` per line |
 | Background colours | `Label\|#rrggbb` per line; ships with pale tints only |
 | Size entry field | Adds `fontsizeinput` with its increase and decrease buttons; off by default |
+| Unit for the size entry field | What a bare number in that field means; `em` by default |
 | Allow free colour choice | Adds the full colour picker to both swatches; on by default |
 | Clear formatting button | Adds `removeformat` to the toolbar; on by default |
 
@@ -107,8 +108,11 @@ default. Turning it off leaves the control in the Format menu.
 Clearing a list setting removes its control from both. An empty background colour
 list means no highlight button rather than an empty picker.
 
-The size entry field accepts `pt`, `px`, `em`, `cm` and `mm` but not `rem`, so a
-bare number typed into it will not match sizes configured in `rem`.
+The size entry field accepts `pt`, `px`, `em`, `cm` and `mm` but not `rem`, so it
+cannot match sizes configured in `rem` exactly. It defaults to `em`, the closest
+of the five, being the only relative one. Note that `em` is relative to the
+parent, so a number typed inside text that already carries a size multiplies
+rather than replaces.
 
 The shipped sizes are in `rem`, which scales with the reader's browser font size
 and does not compound when applied inside text that already carries a size. Do

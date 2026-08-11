@@ -72,9 +72,14 @@ $string['fontfamilies_desc'] = 'Entries for the font picker, one per line as '
 $string['fontsizeinput'] = 'Size entry field';
 $string['fontsizeinput_desc'] = 'Adds TinyMCE\'s numeric size field to the toolbar, which comes with '
     . 'the increase and decrease buttons on either side of it. There are no standalone buttons for '
-    . 'those. The field takes <code>pt</code>, <code>px</code>, <code>em</code>, <code>cm</code> or '
-    . '<code>mm</code> but not <code>rem</code>, so a bare number entered here will not match sizes '
-    . 'configured in <code>rem</code>.';
+    . 'those.';
+$string['fontsizeinputunit'] = 'Unit for the size entry field';
+$string['fontsizeinputunit_desc'] = 'What a bare number typed into the field means. TinyMCE accepts '
+    . 'only these five units here and not <code>rem</code>, so this control cannot match sizes set '
+    . 'in <code>rem</code> exactly. <code>em</code> is the closest of the five: it is the only '
+    . 'relative one, so it scales with the reader\'s browser font size. Note that it is relative to '
+    . 'the parent, so typing a number inside text that already carries a size multiplies rather than '
+    . 'replaces.';
 $string['pluginname'] = 'Font toolkit';
 $string['privacy:metadata'] = 'The Font toolkit plugin only adds editor controls configured at site '
     . 'level. It stores no personal data.';

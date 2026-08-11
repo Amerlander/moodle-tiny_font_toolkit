@@ -73,6 +73,21 @@ class plugininfo extends plugin implements plugin_with_configuration {
     }
 
     /**
+     * Read the unit the size entry field applies to a bare number.
+     *
+     * TinyMCE accepts only pt, px, em, cm and mm here, so an unrecognised value
+     * is dropped rather than passed on, which would make TinyMCE ignore the
+     * option and fall back to its own default of pt.
+     *
+     * @return string
+     */
+    private static function unit(): string {
+        $value = get_config('tiny_font_toolkit', 'fontsizeinputunit');
+        $allowed = ['pt', 'px', 'em', 'cm', 'mm'];
+        return in_array($value, $allowed, true) ? $value : 'em';
+    }
+
+    /**
      * Split a textarea setting into trimmed, non-empty lines.
      *
      * @param string $raw
@@ -179,6 +194,7 @@ class plugininfo extends plugin implements plugin_with_configuration {
             'customcolors' => self::flag('customcolors', true),
             'removeformat' => self::flag('removeformat', true),
             'fontsizeinput' => self::flag('fontsizeinput', false),
+            'fontsizeinputunit' => self::unit(),
             'toolbarsizes' => self::flag('toolbarsizes', true),
             'toolbarfontfamilies' => self::flag('toolbarfontfamilies', true),
             'toolbartextcolors' => self::flag('toolbartextcolors', true),
