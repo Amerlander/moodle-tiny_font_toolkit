@@ -34,6 +34,9 @@ git clone --branch v1.0.0 https://github.com/Amerlander/moodle-tiny_font_toolkit
 A new major version lands on `main` and gets its own branch, so a `v1` pin never
 picks it up.
 
+[CHANGELOG.md](CHANGELOG.md) records what changed per version for the people
+running the site.
+
 ## Installation
 
 Each release carries an installable ZIP as an asset, which Moodle's
