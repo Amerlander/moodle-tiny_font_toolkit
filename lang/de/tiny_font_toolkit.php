@@ -32,6 +32,11 @@
  * The `default_*` entries are not UI labels: they are the shipped default values
  * for the matching admin settings, so they are safe to translate and to change.
  *
+ * Each value is one string rather than several joined with `.`, so that this file
+ * can be uploaded to AMOS as it is. Its upload form tokenises the file instead of
+ * executing it and wants the semicolon directly after the value. Long lines are
+ * fine here: moodle-cs skips its LineLength sniff for any path under lang/.
+ *
  * @package     tiny_font_toolkit
  * @author      Juri Wolf
  * @copyright   2026 Calliope gGmbH
@@ -41,12 +46,9 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['backgroundcolors'] = 'Hintergrundfarben';
-$string['backgroundcolors_desc'] = 'Einträge für den Hintergrundfarb-Wähler, eine pro Zeile als '
-    . '<code>Bezeichnung|#rrggbb</code>. Auf hellen Tönen bleibt Text lesbar, deshalb enthält die '
-    . 'mitgelieferte Liste nur solche. Leer lassen blendet den Wähler aus.';
+$string['backgroundcolors_desc'] = 'Einträge für den Hintergrundfarb-Wähler, eine pro Zeile als <code>Bezeichnung|#rrggbb</code>. Auf hellen Tönen bleibt Text lesbar, deshalb enthält die mitgelieferte Liste nur solche. Leer lassen blendet den Wähler aus.';
 $string['customcolors'] = 'Freie Farbwahl erlauben';
-$string['customcolors_desc'] = 'Ergänzt beide Farbwähler um einen vollständigen Farbwähler. '
-    . 'Ausschalten hält alle auf den Listen oben.';
+$string['customcolors_desc'] = 'Ergänzt beide Farbwähler um einen vollständigen Farbwähler. Ausschalten hält alle auf den Listen oben.';
 $string['default_backgroundcolors'] = 'Gelb|#fff3b0
 Orange|#ffe0c2
 Rot|#fbd5d5
@@ -77,33 +79,21 @@ Violett|#6b21a8
 Weiß|#ffffff';
 $string['familybutton'] = 'Schriftart';
 $string['fontfamilies'] = 'Schriftarten';
-$string['fontfamilies_desc'] = 'Einträge für den Schriftart-Wähler, eine pro Zeile als '
-    . '<code>Bezeichnung|Font-Stack</code>. Der Stack darf kein Semikolon enthalten. '
-    . '<code>inherit</code> setzt auf die Theme-Schrift zurück. Leer lassen blendet den Wähler aus.';
+$string['fontfamilies_desc'] = 'Einträge für den Schriftart-Wähler, eine pro Zeile als <code>Bezeichnung|Font-Stack</code>. Der Stack darf kein Semikolon enthalten. <code>inherit</code> setzt auf die Theme-Schrift zurück. Leer lassen blendet den Wähler aus.';
 $string['groupcolors'] = 'Farben';
 $string['groupfonts'] = 'Schriftarten';
 $string['groupother'] = 'Weiteres';
 $string['groupsizes'] = 'Größen';
 $string['pluginname'] = 'Schriftwerkzeuge';
-$string['privacy:metadata'] = 'Die Schriftwerkzeuge ergänzen lediglich Editor-Bedienelemente, die auf '
-    . 'Website-Ebene konfiguriert werden. Sie speichern keine personenbezogenen Daten.';
+$string['privacy:metadata'] = 'Die Schriftwerkzeuge ergänzen lediglich Editor-Bedienelemente, die auf Website-Ebene konfiguriert werden. Sie speichern keine personenbezogenen Daten.';
 $string['removeformat'] = 'Schaltfläche „Formate löschen“';
-$string['removeformat_desc'] = 'Ergänzt die Toolbar um TinyMCEs Schaltfläche zum Löschen der '
-    . 'Formatierung. Im Format-Menü ist sie unabhängig von dieser Einstellung immer verfügbar.';
+$string['removeformat_desc'] = 'Ergänzt die Toolbar um TinyMCEs Schaltfläche zum Löschen der Formatierung. Im Format-Menü ist sie unabhängig von dieser Einstellung immer verfügbar.';
 $string['showdefault'] = 'Mitgelieferte Vorgabe anzeigen';
 $string['sizebutton'] = 'Größe';
 $string['sizes'] = 'Größen';
-$string['sizes_desc'] = 'Eine Größe pro Zeile. Mit Bezeichnung als <code>Bezeichnung|Wert</code> '
-    . 'geschrieben, etwa <code>Groß|1.25rem</code>, entsteht ein Wähler mit lesbaren Einträgen. '
-    . 'Stehen dort nackte Werte wie <code>1.25rem</code>, wird TinyMCEs eigenes Größen-Menü '
-    . 'verwendet, das den Wert selbst anzeigt und für Text ohne gesetzte Größe auf den vom Browser '
-    . 'berechneten Wert zurückfällt. <code>rem</code> verwenden: es skaliert mit der '
-    . 'Browser-Schriftgröße der Lesenden und potenziert sich, anders als <code>em</code>, nicht '
-    . 'innerhalb bereits vergrößerten Textes. Leer lassen blendet das Bedienelement aus.';
+$string['sizes_desc'] = 'Eine Größe pro Zeile. Mit Bezeichnung als <code>Bezeichnung|Wert</code> geschrieben, etwa <code>Groß|1.25rem</code>, entsteht ein Wähler mit lesbaren Einträgen. Stehen dort nackte Werte wie <code>1.25rem</code>, wird TinyMCEs eigenes Größen-Menü verwendet, das den Wert selbst anzeigt und für Text ohne gesetzte Größe auf den vom Browser berechneten Wert zurückfällt. <code>rem</code> verwenden: es skaliert mit der Browser-Schriftgröße der Lesenden und potenziert sich, anders als <code>em</code>, nicht innerhalb bereits vergrößerten Textes. Leer lassen blendet das Bedienelement aus.';
 $string['textcolors'] = 'Textfarben';
-$string['textcolors_desc'] = 'Einträge für den Textfarb-Wähler, eine pro Zeile als '
-    . '<code>Bezeichnung|#rrggbb</code>. Die Bezeichnungen werden von Screenreadern vorgelesen, '
-    . 'also die Farbe benennen, nicht ihren Zweck. Leer lassen blendet den Wähler aus.';
+$string['textcolors_desc'] = 'Einträge für den Textfarb-Wähler, eine pro Zeile als <code>Bezeichnung|#rrggbb</code>. Die Bezeichnungen werden von Screenreadern vorgelesen, also die Farbe benennen, nicht ihren Zweck. Leer lassen blendet den Wähler aus.';
 $string['toolbarbackgroundcolors'] = 'Hintergrundfarbe in der Toolbar';
 $string['toolbarbackgroundcolors_desc'] = 'Aus lässt sie nur im Format-Menü.';
 $string['toolbarfontfamilies'] = 'Schriftarten in der Toolbar';

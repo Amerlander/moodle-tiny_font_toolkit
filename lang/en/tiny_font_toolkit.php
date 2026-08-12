@@ -21,6 +21,10 @@
  * The `default_*` entries are not UI labels: they are the shipped default values
  * for the matching admin settings, so they are safe to translate and to change.
  *
+ * Each value is one string rather than several joined with `.`. Long lines are
+ * fine in a lang file: moodle-cs skips its LineLength sniff for any path under
+ * lang/, which is why Moodle's own lang files look like this.
+ *
  * @package     tiny_font_toolkit
  * @author      Juri Wolf
  * @copyright   2026 Calliope gGmbH
@@ -30,12 +34,9 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['backgroundcolors'] = 'Background colours';
-$string['backgroundcolors_desc'] = 'Entries for the background colour picker, one per line as '
-    . '<code>Label|#rrggbb</code>. Text stays readable on pale tints, so the shipped list holds '
-    . 'only those. Leave empty to hide the picker.';
+$string['backgroundcolors_desc'] = 'Entries for the background colour picker, one per line as <code>Label|#rrggbb</code>. Text stays readable on pale tints, so the shipped list holds only those. Leave empty to hide the picker.';
 $string['customcolors'] = 'Allow free colour choice';
-$string['customcolors_desc'] = 'Adds a full colour picker to both colour swatches. Turn off to keep '
-    . 'everyone on the lists above.';
+$string['customcolors_desc'] = 'Adds a full colour picker to both colour swatches. Turn off to keep everyone on the lists above.';
 $string['default_backgroundcolors'] = 'Yellow|#fff3b0
 Orange|#ffe0c2
 Red|#fbd5d5
@@ -66,32 +67,21 @@ Purple|#6b21a8
 White|#ffffff';
 $string['familybutton'] = 'Font';
 $string['fontfamilies'] = 'Font families';
-$string['fontfamilies_desc'] = 'Entries for the font picker, one per line as '
-    . '<code>Label|font stack</code>. The stack must not contain a semicolon. <code>inherit</code> '
-    . 'resets to the theme font. Leave empty to hide the picker.';
+$string['fontfamilies_desc'] = 'Entries for the font picker, one per line as <code>Label|font stack</code>. The stack must not contain a semicolon. <code>inherit</code> resets to the theme font. Leave empty to hide the picker.';
 $string['groupcolors'] = 'Colours';
 $string['groupfonts'] = 'Fonts';
 $string['groupother'] = 'Other';
 $string['groupsizes'] = 'Sizes';
 $string['pluginname'] = 'Font toolkit';
-$string['privacy:metadata'] = 'The Font toolkit plugin only adds editor controls configured at site '
-    . 'level. It stores no personal data.';
+$string['privacy:metadata'] = 'The Font toolkit plugin only adds editor controls configured at site level. It stores no personal data.';
 $string['removeformat'] = 'Clear formatting button';
-$string['removeformat_desc'] = 'Adds TinyMCE\'s clear formatting button to the toolbar. It is always '
-    . 'available in the Format menu regardless of this setting.';
+$string['removeformat_desc'] = 'Adds TinyMCE\'s clear formatting button to the toolbar. It is always available in the Format menu regardless of this setting.';
 $string['showdefault'] = 'Show the shipped default';
 $string['sizebutton'] = 'Size';
 $string['sizes'] = 'Sizes';
-$string['sizes_desc'] = 'One size per line. Name them as <code>Label|value</code>, for example '
-    . '<code>Large|1.25rem</code>, to get a picker with readable entries. Give bare values instead, '
-    . 'such as <code>1.25rem</code>, and TinyMCE\'s own size dropdown is used, which shows the value '
-    . 'itself and falls back to the browser\'s computed size for text that has none set. Use '
-    . '<code>rem</code>: it scales with the reader\'s browser font size and, unlike <code>em</code>, '
-    . 'does not multiply when applied inside already-sized text. Leave empty to hide the control.';
+$string['sizes_desc'] = 'One size per line. Name them as <code>Label|value</code>, for example <code>Large|1.25rem</code>, to get a picker with readable entries. Give bare values instead, such as <code>1.25rem</code>, and TinyMCE\'s own size dropdown is used, which shows the value itself and falls back to the browser\'s computed size for text that has none set. Use <code>rem</code>: it scales with the reader\'s browser font size and, unlike <code>em</code>, does not multiply when applied inside already-sized text. Leave empty to hide the control.';
 $string['textcolors'] = 'Text colours';
-$string['textcolors_desc'] = 'Entries for the text colour picker, one per line as '
-    . '<code>Label|#rrggbb</code>. Labels are read out by screen readers, so name the colour rather '
-    . 'than its purpose. Leave empty to hide the picker.';
+$string['textcolors_desc'] = 'Entries for the text colour picker, one per line as <code>Label|#rrggbb</code>. Labels are read out by screen readers, so name the colour rather than its purpose. Leave empty to hide the picker.';
 $string['toolbarbackgroundcolors'] = 'Background colour in the toolbar';
 $string['toolbarbackgroundcolors_desc'] = 'Off leaves it in the Format menu only.';
 $string['toolbarfontfamilies'] = 'Fonts in the toolbar';
