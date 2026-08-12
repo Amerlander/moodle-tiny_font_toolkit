@@ -76,7 +76,7 @@ $string['groupsizes'] = 'Größen';
 $string['pluginname'] = 'Schrift-Toolkit';
 $string['privacy:metadata'] = 'Das Schrift-Toolkit ergänzt lediglich Editor-Bedienelemente, die auf '
     . 'Website-Ebene konfiguriert werden. Es speichert keine personenbezogenen Daten.';
-$string['removeformat'] = 'Schaltfläche „Formate löschen"';
+$string['removeformat'] = 'Schaltfläche „Formate löschen“';
 $string['removeformat_desc'] = 'Ergänzt die Toolbar um TinyMCEs Schaltfläche zum Löschen der '
     . 'Formatierung. Im Format-Menü ist sie unabhängig von dieser Einstellung immer verfügbar.';
 $string['showdefault'] = 'Mitgelieferte Vorgabe anzeigen';

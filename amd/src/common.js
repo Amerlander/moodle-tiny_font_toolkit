@@ -24,7 +24,7 @@
 
 export const component = 'tiny_font_toolkit';
 
-// Moodle registers tiny subplugins under "<component>/plugin" — see
+// Moodle registers tiny subplugins under "<component>/plugin", see
 // editor_tiny\manager::get_plugin_configuration(). This is also the key our
 // PHP config arrives under in `options.plugins`.
 export const pluginName = `${component}/plugin`;

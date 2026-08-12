@@ -121,22 +121,31 @@ purpose.
 
 ## Building the AMD modules
 
-Moodle serves `amd/build/*.min.js`, so the build output is committed. Edit
-`amd/src/`, then run the "Rebuild AMD bundles" workflow from the Actions tab. It
-regenerates `amd/build/` with Moodle's Grunt and commits the result. The CI
-workflows check on every push that the two are in sync, and they also run ESLint
-over `amd/src/`.
+Moodle serves `amd/build/*.min.js`, so the build output is committed. A push that
+touches `amd/src/` starts the "Rebuild AMD bundles" workflow, which regenerates
+`amd/build/` with Moodle's Grunt, commits it and then starts the per-version
+checks against the result. Dispatch that workflow from the Actions tab to rebuild
+without a source change.
+
+The rebuild proves it really ran by comparing the `sourcesContent` in each source
+map against `amd/src/`. That comparison holds whatever versions npm resolved,
+which matters because Moodle ships no `package-lock.json`: two runs install
+different Babel and terser builds and compile the same source to different bytes.
+For the same reason the CI check treats a byte difference in `amd/build/` as a
+warning rather than a failure. ESLint findings there do fail.
 
 Moodle's build makes an `export default` the AMD module's return value, and
 `editor_tiny` depends on that: it loads a subplugin with a bare
 `require([path], resolve)` and tests the result with `Array.isArray()`. A build
 without that return produces an editor that loads normally and shows none of the
-controls, so use Moodle's Grunt rather than a stock Babel AMD transform. For a
-local build, run `grunt amd --root=lib/editor/tiny/plugins/font_toolkit` in a
-full Moodle checkout.
+controls, so use Moodle's Grunt rather than a stock Babel AMD transform.
 
-Because the rebuild workflow commits with `GITHUB_TOKEN`, its commit does not
-trigger the CI workflows. Dispatch them manually to refresh the badges.
+For a local build, run `grunt amd` from inside
+`lib/editor/tiny/plugins/font_toolkit` in a full Moodle checkout. Moodle's
+Gruntfile scopes the build from the working directory, so `--root` from the
+Moodle root leaves rollup with an empty file list and reports success having
+built nothing. Note also that `moodle-plugin-ci grunt` cannot build: it mirrors
+its own backup back over the plugin once it has compared.
 
 ## Licence
 
