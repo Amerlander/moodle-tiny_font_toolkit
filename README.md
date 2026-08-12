@@ -125,14 +125,23 @@ purpose.
 
 ## Translations
 
-Only `lang/en` ships with the plugin. Every other language belongs in
-[AMOS](https://lang.moodle.org/local/amos/), which delivers it through the site's
-language pack.
+Translations belong in [AMOS](https://lang.moodle.org/local/amos/), which
+delivers them through the site's language pack. That covers plugins installed
+from source as well as from a ZIP, because the strings arrive in
+`$CFG->dataroot/lang/` and never touch the plugin directory.
 
-That is also the order Moodle resolves them in. `load_component_strings()` reads
-a plugin's own `lang/<code>/` first — it labels that path "legacy location, used
-by contrib only" — and the installed language pack second, so the pack wins.
-Keys that exist in no other language than English are dropped either way.
+`lang/en` and `lang/de` ship with the plugin anyway. Moodle resolves them in an
+order that makes this safe: `load_component_strings()` reads a plugin's own
+`lang/<code>/` first — it labels that path "legacy location, used by contrib
+only" — and the language pack second, so the pack silently wins once AMOS
+carries the component. Keys that exist in no language but English are dropped
+either way.
+
+German is shipped because the `default_*` values are written into
+`config_plugins` at install time. A German site installing before AMOS knows this
+component would otherwise freeze English size and colour labels into its editor
+permanently. The file becomes dead weight once the German pack carries these
+strings, and can go then.
 
 ## Building the AMD modules
 
