@@ -36,7 +36,7 @@ use editor_tiny\plugin_with_configuration;
  * Note this implements `plugin_with_configuration` only, and not
  * `plugin_with_buttons` / `plugin_with_menuitems`. Those interfaces exist so
  * Moodle learns about buttons a plugin *provides*; the items switched back on
- * here (`fontsize`, `fontsizeinput`, `forecolor`, `backcolor`, `removeformat`)
+ * here (`fontsize`, `forecolor`, `backcolor` and `removeformat`)
  * are already in core's own list, see `get_tinymce_buttons()` in
  * editor_tiny\manager. Declaring them again would register them twice.
  */
@@ -53,13 +53,28 @@ class plugininfo extends plugin implements plugin_with_configuration {
      * it removes its control, and treating empty as unset would refill it from
      * the default instead, so an administrator could never turn one off.
      *
+     * The site language, rather than the reading user's, so that the fallback
+     * matches the value Moodle writes into config when it applies the defaults.
+     * Otherwise two users could see differently labelled pickers in the window
+     * before that happens. Note this goes through the string manager: the fourth
+     * argument to get_string() is $lazyload, not a language.
+     *
      * @param string $name
      * @return string
      */
     private static function setting(string $name): string {
+        global $CFG;
+
         $value = get_config('tiny_font_toolkit', $name);
         if ($value === false) {
-            return (string) get_string('default_' . $name, 'tiny_font_toolkit');
+            $lang = isset($CFG->lang) ? $CFG->lang : null;
+
+            return (string) get_string_manager()->get_string(
+                'default_' . $name,
+                'tiny_font_toolkit',
+                null,
+                $lang
+            );
         }
         return (string) $value;
     }
@@ -74,21 +89,6 @@ class plugininfo extends plugin implements plugin_with_configuration {
     private static function flag(string $name, bool $default): bool {
         $value = get_config('tiny_font_toolkit', $name);
         return $value === false ? $default : (bool) $value;
-    }
-
-    /**
-     * Read the unit the size entry field applies to a bare number.
-     *
-     * TinyMCE accepts only pt, px, em, cm and mm here, so an unrecognised value
-     * is dropped rather than passed on, which would make TinyMCE ignore the
-     * option and fall back to its own default of pt.
-     *
-     * @return string
-     */
-    private static function unit(): string {
-        $value = get_config('tiny_font_toolkit', 'fontsizeinputunit');
-        $allowed = ['pt', 'px', 'em', 'cm', 'mm'];
-        return in_array($value, $allowed, true) ? $value : 'em';
     }
 
     /**
@@ -197,8 +197,6 @@ class plugininfo extends plugin implements plugin_with_configuration {
             'backgroundcolors' => self::pairs(self::setting('backgroundcolors')),
             'customcolors' => self::flag('customcolors', true),
             'removeformat' => self::flag('removeformat', true),
-            'fontsizeinput' => self::flag('fontsizeinput', false),
-            'fontsizeinputunit' => self::unit(),
             'toolbarsizes' => self::flag('toolbarsizes', true),
             'toolbarfontfamilies' => self::flag('toolbarfontfamilies', true),
             'toolbartextcolors' => self::flag('toolbartextcolors', true),

@@ -69,17 +69,6 @@ $string['fontfamilies'] = 'Font families';
 $string['fontfamilies_desc'] = 'Entries for the font picker, one per line as '
     . '<code>Label|font stack</code>. The stack must not contain a semicolon. <code>inherit</code> '
     . 'resets to the theme font. Leave empty to hide the picker.';
-$string['fontsizeinput'] = 'Size entry field';
-$string['fontsizeinput_desc'] = 'Adds TinyMCE\'s numeric size field to the toolbar, which comes with '
-    . 'the increase and decrease buttons on either side of it. There are no standalone buttons for '
-    . 'those.';
-$string['fontsizeinputunit'] = 'Unit for the size entry field';
-$string['fontsizeinputunit_desc'] = 'What a bare number typed into the field means. TinyMCE accepts '
-    . 'only these five units here and not <code>rem</code>, so this control cannot match sizes set '
-    . 'in <code>rem</code> exactly. <code>em</code> is the closest of the five: it is the only '
-    . 'relative one, so it scales with the reader\'s browser font size. Note that it is relative to '
-    . 'the parent, so typing a number inside text that already carries a size multiplies rather than '
-    . 'replaces.';
 $string['groupcolors'] = 'Colours';
 $string['groupfonts'] = 'Fonts';
 $string['groupother'] = 'Other';

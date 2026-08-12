@@ -59,7 +59,6 @@ Notifications to finish the install.
 | Font picker | The `FontName` editor command |
 | Text colour | `forecolor`, via `color_map_foreground` |
 | Background colour | `backcolor`, via `color_map_background` |
-| Size entry field with increase and decrease | `fontsizeinput` |
 | Clear formatting | `removeformat` |
 
 One setting drives both size controls. A list that names its entries
@@ -74,10 +73,11 @@ unstyled text reads as `16px`, and native nested menu items reference no icon at
 all. Applying a size or a font still goes through the editor's own formatter, via
 the built-in `FontSize` and `FontName` commands.
 
-TinyMCE has no standalone increase and decrease buttons for font size. They come
-attached to the `fontsizeinput` field, which is why enabling them means enabling
-that field. It sits in its own toolbar group, since TinyMCE's documentation warns
-against presenting `fontsize` and `fontsizeinput` together.
+There is no increase or decrease button for font size. TinyMCE offers those only
+attached to its `fontsizeinput` field, and that field reports the browser's
+computed size, so its buttons step in `px` from there whatever unit is
+configured. On a plugin whose sizes are in `rem`, it produces `px` markup, which
+is what the sizes are chosen to avoid.
 
 TinyMCE's icon pack covers the native controls (`remove-formatting`,
 `text-color`, `highlight-bg-color`) but has no font size or font family icon.
@@ -97,8 +97,6 @@ Site administration » Plugins » Text editors » TinyMCE editor » Font toolkit
 | Font families | `Label\|font stack` per line; the stack cannot contain `;` |
 | Text colours | `Label\|#rrggbb` per line |
 | Background colours | `Label\|#rrggbb` per line; ships with pale tints only |
-| Size entry field | Adds `fontsizeinput` with its increase and decrease buttons; off by default |
-| Unit for the size entry field | What a bare number in that field means; `em` by default |
 | Allow free colour choice | Adds the full colour picker to both swatches; on by default |
 | Clear formatting button | Adds `removeformat` to the toolbar; on by default |
 
@@ -108,11 +106,10 @@ default. Turning it off leaves the control in the Format menu.
 Clearing a list setting removes its control from both. An empty background colour
 list means no highlight button rather than an empty picker.
 
-The size entry field accepts `pt`, `px`, `em`, `cm` and `mm` but not `rem`, so it
-cannot match sizes configured in `rem` exactly. It defaults to `em`, the closest
-of the five, being the only relative one. Note that `em` is relative to the
-parent, so a number typed inside text that already carries a size multiplies
-rather than replaces.
+Each default is read from the language pack, so the values a site starts with
+follow its own language. Moodle writes them when it applies plugin defaults
+during an upgrade, and they belong to the administrator from then on: switching
+the site language later leaves them as they are.
 
 The shipped sizes are in `rem`, which scales with the reader's browser font size
 and does not compound when applied inside text that already carries a size. Do

@@ -69,17 +69,6 @@ $string['fontfamilies'] = 'Schriftarten';
 $string['fontfamilies_desc'] = 'Einträge für den Schriftart-Wähler, eine pro Zeile als '
     . '<code>Bezeichnung|Font-Stack</code>. Der Stack darf kein Semikolon enthalten. '
     . '<code>inherit</code> setzt auf die Theme-Schrift zurück. Leer lassen blendet den Wähler aus.';
-$string['fontsizeinput'] = 'Eingabefeld für Größen';
-$string['fontsizeinput_desc'] = 'Ergänzt die Toolbar um TinyMCEs Zahlenfeld für die Schriftgröße, '
-    . 'das die Schaltflächen zum Vergrößern und Verkleinern links und rechts davon mitbringt. '
-    . 'Eigenständige Schaltflächen dafür gibt es nicht.';
-$string['fontsizeinputunit'] = 'Einheit für das Eingabefeld';
-$string['fontsizeinputunit_desc'] = 'Was eine nackte Zahl im Feld bedeutet. TinyMCE akzeptiert hier '
-    . 'nur diese fünf Einheiten und kein <code>rem</code>, dieses Bedienelement kann Größen in '
-    . '<code>rem</code> also nicht exakt treffen. <code>em</code> kommt am nächsten: es ist die '
-    . 'einzige relative der fünf und skaliert mit der Browser-Schriftgröße der Lesenden. Zu beachten: '
-    . 'es bezieht sich auf das Elternelement, eine Zahl innerhalb bereits vergrößerten Textes '
-    . 'multipliziert also, statt zu ersetzen.';
 $string['groupcolors'] = 'Farben';
 $string['groupfonts'] = 'Schriftarten';
 $string['groupother'] = 'Weiteres';

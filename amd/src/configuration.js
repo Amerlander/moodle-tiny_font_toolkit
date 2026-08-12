@@ -28,12 +28,8 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-import {addMenubarItem, addToolbarButtons, addToolbarSection} from 'editor_tiny/utils';
-import {component, familyButtonName, pluginName, sizeButtonName} from './common';
-
-// TinyMCE's docs warn that `fontsize` and `fontsizeinput` should not be
-// presented together, so the input gets a toolbar section of its own.
-const inputSectionName = `${component}_input`;
+import {addMenubarItem, addToolbarButtons} from 'editor_tiny/utils';
+import {familyButtonName, pluginName, sizeButtonName} from './common';
 
 /**
  * Get this plugin's admin settings, as returned by plugininfo.php.
@@ -138,25 +134,8 @@ export const configure = (instanceConfig, options) => {
         toolbarItems.push('removeformat');
     }
 
-    // The font size input cannot live in a menu, being a text entry field, so it
-    // is toolbar only. It brings TinyMCE's increase and decrease buttons with
-    // it; there are no standalone toolbar items for those.
-    if (toolbarItems.length || config.fontsizeinput) {
-        // Note that addToolbarButtons returns a copy while addToolbarSection
-        // mutates what it is given. Taking the copy first keeps Moodle's own
-        // config object out of it.
-        let toolbar = addToolbarButtons(instanceConfig.toolbar, 'formatting', toolbarItems);
-
-        if (config.fontsizeinput) {
-            toolbar = addToolbarSection(toolbar, inputSectionName, 'formatting');
-            toolbar = addToolbarButtons(toolbar, inputSectionName, ['fontsizeinput']);
-            // What a bare number typed into the field means. TinyMCE would
-            // otherwise read it as pt.
-            // eslint-disable-next-line camelcase
-            override.font_size_input_default_unit = config.fontsizeinputunit;
-        }
-
-        override.toolbar = toolbar;
+    if (toolbarItems.length) {
+        override.toolbar = addToolbarButtons(instanceConfig.toolbar, 'formatting', toolbarItems);
     }
 
     if (menuItems.length) {
