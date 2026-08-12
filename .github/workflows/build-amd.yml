@@ -81,20 +81,24 @@ jobs:
 
       - name: Rebuild the bundles
         run: |
-          set -uxo pipefail
-          # Exits 1 on any difference from the committed files, which is the
-          # situation this job exists to resolve.
-          moodle-plugin-ci grunt || true
-
-          set -e
-          # Grunt writes into the plugin as it sits in the Moodle tree, not into
-          # this checkout, so the output has to be brought back before it can be
-          # committed. Leaving this out is why an earlier run of this job reported
-          # success while committing nothing.
+          set -eux
+          # Moodle's grunt directly, not `moodle-plugin-ci grunt`. That command is
+          # a checker: GruntCommand::restorePlugin() mirrors its backup back over
+          # the plugin directory with delete and override once it has compared, so
+          # it deliberately leaves no output. Two runs of this job reported success
+          # and committed nothing before that was clear.
+          #
+          # It still runs inside the tree moodle-plugin-ci provisioned, so the
+          # toolchain stays as close to the checker's as it can be.
+          moodleroot=$(realpath moodle)
           moodledir=$(find moodle -type d -path '*/lib/editor/tiny/plugins/font_toolkit' | head -1)
           test -n "${moodledir}"
-          echo "grunt wrote to ${moodledir}/amd/build"
-          ls -l "${moodledir}/amd/build/"
+
+          # Driven from inside the component directory: Moodle's Gruntfile takes
+          # grunt.moodleEnv.inComponent from the cwd, and that is what scopes
+          # amdSrc to this plugin. --root from the Moodle root leaves rollup with
+          # an empty file list and prints "Done." having built nothing.
+          (cd "${moodledir}" && "${moodleroot}/node_modules/.bin/grunt" amd)
 
           src=$(realpath "${moodledir}/amd/build")
           dst=$(realpath plugin/amd/build)
@@ -104,10 +108,6 @@ jobs:
 
           ls -l plugin/amd/build/
 
-          # Grunt aborts before rollup if eslint:amd rejects amd/src, in which
-          # case nothing is written and the commit step below would report
-          # everything up to date. Source maps only come from rollup, so they are
-          # the tell.
           for module in commands common configuration icons options plugin; do
             test -s "plugin/amd/build/${module}.min.js"
             test -s "plugin/amd/build/${module}.min.js.map"
@@ -117,6 +117,26 @@ jobs:
           # An `export default` has to be the module's return value or
           # editor_tiny drops the plugin without a word. See the README.
           grep -q 'return _exports\.default' plugin/amd/build/plugin.min.js
+
+          # Proof that this build came from the current sources. A source map
+          # carries the original text verbatim in sourcesContent, so comparing it
+          # against amd/src catches a build that never ran. Unlike comparing the
+          # compiled bytes, this does not depend on which Babel and terser versions
+          # npm happened to resolve, so it holds even without a Moodle lockfile.
+          node -e '
+            const fs = require("fs");
+            for (const m of ["commands", "common", "configuration", "icons", "options", "plugin"]) {
+              const map = JSON.parse(fs.readFileSync(`plugin/amd/build/${m}.min.js.map`, "utf8"));
+              const want = fs.readFileSync(`plugin/amd/src/${m}.js`, "utf8");
+              const i = (map.sources || []).findIndex((s) => s.endsWith(`${m}.js`));
+              const got = (map.sourcesContent || [])[i < 0 ? 0 : i];
+              if (got !== want) {
+                console.error(`${m}: the source map does not match amd/src, so grunt did not rebuild it`);
+                process.exit(1);
+              }
+              console.log(`${m}: source map matches amd/src`);
+            }
+          '
 
       - name: Commit the rebuilt bundles
         id: commit
