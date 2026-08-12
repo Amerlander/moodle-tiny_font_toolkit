@@ -111,6 +111,10 @@ follow its own language. Moodle writes them when it applies plugin defaults
 during an upgrade, and they belong to the administrator from then on: switching
 the site language later leaves them as they are.
 
+The `default_*` strings that carry those values are therefore not UI labels. A
+translation should render the part before the `|` and leave the value after it
+alone.
+
 The shipped sizes are in `rem`, which scales with the reader's browser font size
 and does not compound when applied inside text that already carries a size. Do
 not switch them to `em`, which is relative to the parent and multiplies when
@@ -118,6 +122,17 @@ nested.
 
 Colour labels are read out by screen readers, so name the colour rather than its
 purpose.
+
+## Translations
+
+Only `lang/en` ships with the plugin. Every other language belongs in
+[AMOS](https://lang.moodle.org/local/amos/), which delivers it through the site's
+language pack.
+
+That is also the order Moodle resolves them in. `load_component_strings()` reads
+a plugin's own `lang/<code>/` first — it labels that path "legacy location, used
+by contrib only" — and the installed language pack second, so the pack wins.
+Keys that exist in no other language than English are dropped either way.
 
 ## Building the AMD modules
 
