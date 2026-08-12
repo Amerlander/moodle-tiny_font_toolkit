@@ -100,7 +100,12 @@ jobs:
       - name: Grunt
         if: ${{ !cancelled() }}
         run: |
+          # GitHub runs steps under `bash -e`. With pipefail the grunt pipeline
+          # carries moodle-plugin-ci's own non-zero exit, so -e would end the step
+          # there and none of the branching below would run.
+          set +e
           set -uo pipefail
+
           log=$(mktemp)
           moodle-plugin-ci grunt --max-lint-warnings 0 2>&1 | tee "${log}"
           status=${PIPESTATUS[0]}

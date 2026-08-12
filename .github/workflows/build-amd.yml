@@ -87,6 +87,21 @@ jobs:
           moodle-plugin-ci grunt || true
 
           set -e
+          # Grunt writes into the plugin as it sits in the Moodle tree, not into
+          # this checkout, so the output has to be brought back before it can be
+          # committed. Leaving this out is why an earlier run of this job reported
+          # success while committing nothing.
+          moodledir=$(find moodle -type d -path '*/lib/editor/tiny/plugins/font_toolkit' | head -1)
+          test -n "${moodledir}"
+          echo "grunt wrote to ${moodledir}/amd/build"
+          ls -l "${moodledir}/amd/build/"
+
+          src=$(realpath "${moodledir}/amd/build")
+          dst=$(realpath plugin/amd/build)
+          if [ "${src}" != "${dst}" ]; then
+            cp -a "${src}/." "${dst}/"
+          fi
+
           ls -l plugin/amd/build/
 
           # Grunt aborts before rollup if eslint:amd rejects amd/src, in which
