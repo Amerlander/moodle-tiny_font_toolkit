@@ -126,6 +126,13 @@ nested.
 Colour labels are read out by screen readers, so name the colour rather than its
 purpose.
 
+## Capability
+
+`tiny/font_toolkit:use`, allowed for authenticated users. From Moodle 5.0 on,
+`editor_tiny\plugin::is_enabled()` checks a subplugin's `:use` capability before
+loading it, so denying the capability to a role removes the controls for that
+role. Moodle 4.1 and 4.5 do not check it.
+
 ## Translations
 
 Translations belong in [AMOS](https://lang.moodle.org/local/amos/), which

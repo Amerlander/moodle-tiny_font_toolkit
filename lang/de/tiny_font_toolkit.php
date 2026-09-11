@@ -78,6 +78,7 @@ Blau|#1155cc
 Violett|#6b21a8
 Weiß|#ffffff';
 $string['familybutton'] = 'Schriftart';
+$string['font_toolkit:use'] = 'TinyMCE-Schriftwerkzeuge verwenden';
 $string['fontfamilies'] = 'Schriftarten';
 $string['fontfamilies_desc'] = 'Einträge für den Schriftart-Wähler, eine pro Zeile als <code>Bezeichnung|Font-Stack</code>. Der Stack darf kein Semikolon enthalten. <code>inherit</code> setzt auf die Theme-Schrift zurück. Leer lassen blendet den Wähler aus.';
 $string['groupcolors'] = 'Farben';

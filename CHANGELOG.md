@@ -3,6 +3,14 @@
 What changed for the people running the site. Build, CI and packaging work is
 left out; the commit history has it.
 
+## 1.8.2
+
+The plugin declares the `tiny/font_toolkit:use` capability that Moodle 5.0 and
+later expect of a TinyMCE subplugin. Without it, a site with debugging set to
+Developer and display on printed a warning above every form that opens the
+editor. It is allowed for authenticated users, so the controls stay where they
+were, and a role can now be denied them.
+
 ## 1.8.1
 
 No functional changes.

@@ -66,6 +66,7 @@ Blue|#1155cc
 Purple|#6b21a8
 White|#ffffff';
 $string['familybutton'] = 'Font';
+$string['font_toolkit:use'] = 'Use TinyMCE font toolkit';
 $string['fontfamilies'] = 'Font families';
 $string['fontfamilies_desc'] = 'Entries for the font picker, one per line as <code>Label|font stack</code>. The stack must not contain a semicolon. <code>inherit</code> resets to the theme font. Leave empty to hide the picker.';
 $string['groupcolors'] = 'Colours';
