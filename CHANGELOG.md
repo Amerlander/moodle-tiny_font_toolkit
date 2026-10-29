@@ -3,6 +3,11 @@
 What changed for the people running the site. Build, CI and packaging work is
 left out; the commit history has it.
 
+## 1.8.3
+
+Tested with Moodle 5.3. No functional changes. The size and font icons follow
+the editor's new dark mode, because they take the toolbar's text colour.
+
 ## 1.8.2
 
 The plugin declares the `tiny/font_toolkit:use` capability that Moodle 5.0 and
